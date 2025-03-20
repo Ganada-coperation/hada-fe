@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import styled from "styled-components";
 import Input from "@/app/components/common/Input";
 import Button from "@/app/components/common/Button";
@@ -7,9 +7,10 @@ import { IoClose } from "react-icons/io5"; // ✅ X 아이콘 추가
 interface SubscribeModalProps {
   nickname: string;
   onClose: () => void;
+  children?: ReactNode; // ✅ children 추가
 }
 
-export default function SubscribeModal({ nickname, onClose }: SubscribeModalProps) {
+export default function SubscribeModal({ nickname, onClose, children }: SubscribeModalProps) {
   const [email, setEmail] = useState("");
 
   const handleSubmit = async () => {
@@ -39,9 +40,14 @@ export default function SubscribeModal({ nickname, onClose }: SubscribeModalProp
         </CloseIcon>
 
         <ModalTitle>뉴스레터 구독</ModalTitle>
-        <ModalDescription>
-          <strong>{nickname || "사용자"}</strong>님이 작성하신 글을 뉴스레터로 보내드릴게요!
-        </ModalDescription>
+
+        {/* ✅ children이 있으면 기본 문구 숨김 */}
+        {children || (
+          <ModalDescription>
+            <strong>{nickname || "사용자"}</strong>님이 작성하신 글을 뉴스레터로 보내드릴게요!
+          </ModalDescription>
+        )}
+
         <Input
           type="email"
           placeholder="이메일을 입력하세요"
@@ -105,4 +111,6 @@ const ModalDescription = styled.p`
   font-size: 16px;
   margin-bottom: 20px;
   color: ${({ theme }) => theme.colors.textSecondary};
+  text-align: center;
+  line-height: 1.5;
 `;
