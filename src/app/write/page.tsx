@@ -78,15 +78,25 @@ export default function WritePage() {
         {showWriteEditor && (
           <>
             <WriteEditor content={content} setContent={setContent} />
-            <Button text="뉴스레터로 받아보기" onClick={() => setIsModalOpen(true)} disabled={content.length < 5} />
+            <Button
+              text="뉴스레터로 받아보기"
+              onClick={() => {
+                console.log("모달 열기 상태 변경:", isModalOpen); // ✅ 상태 확인용 콘솔 로그
+                setIsModalOpen(true);
+              }}
+              disabled={content.length < 5}
+            />
           </>
         )}
 
-        {/* ✅ 이메일 입력 모달 */}
+        {/* ✅ 이메일 입력 모달 (isModalOpen이 true일 때만 표시) */}
         {isModalOpen && (
-          <SubscribeModal 
-            nickname={nickname} 
-            onClose={() => setIsModalOpen(false)} 
+          <SubscribeModal
+            nickname={nickname}
+            onClose={() => {
+              console.log("모달 닫기");
+              setIsModalOpen(false);
+            }}
           />
         )}
       </StyledWritePage>

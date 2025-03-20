@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { gowunBatang } from "@/app/styles/fonts";
 import styled from "styled-components";
+import CompleteModal from "@/app/(modals)/@completeModal/CompleteModal"; // ✅ 모달 추가
 
 interface WriteEditorProps {
   content: string;
@@ -10,17 +11,26 @@ interface WriteEditorProps {
 export default function WriteEditor({ content, setContent }: WriteEditorProps) {
   const [isEditing, setIsEditing] = useState(true);
   const [draftContent, setDraftContent] = useState(content);
+  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 상태 추가
 
-  // ✅ 작성 완료 (저장)
+  // ✅ 작성 완료 (저장 후 모달 띄우기)
   const handleSave = () => {
-    setContent(draftContent);
-    setIsEditing(false);
+    if (draftContent.trim().length > 0) {
+      setContent(draftContent);
+      setIsEditing(false);
+      setIsModalOpen(true); // ✅ 작성 완료 시 모달 열기
+    }
   };
 
   // ✅ 수정 버튼 클릭 시 다시 편집 가능
   const handleEdit = () => {
     setIsEditing(true);
   };
+
+  // ✅ content 상태와 draftContent를 동기화
+  useEffect(() => {
+    setDraftContent(content);
+  }, [content]);
 
   return (
     <EditorWrapper>
@@ -31,9 +41,7 @@ export default function WriteEditor({ content, setContent }: WriteEditorProps) {
           placeholder="여기에 글을 작성하세요..."
         />
       ) : (
-        <ContentPreview>
-          {content || "작성된 글이 없습니다."}
-        </ContentPreview>
+        <ContentPreview>{content || "작성된 글이 없습니다."}</ContentPreview>
       )}
 
       {/* ✅ 버튼 UI (작성 완료 → 수정하기 버튼 전환) */}
@@ -44,6 +52,9 @@ export default function WriteEditor({ content, setContent }: WriteEditorProps) {
       ) : (
         <EditButton onClick={handleEdit}>수정하기</EditButton>
       )}
+
+      {/* ✅ 작성 완료 모달 (CompleteModal 활용) */}
+      {isModalOpen && <CompleteModal onClose={() => setIsModalOpen(false)} />}
     </EditorWrapper>
   );
 }

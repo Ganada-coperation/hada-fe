@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import Input from "@/app/components/common/Input";
 import Button from "@/app/components/common/Button";
+import { IoClose } from "react-icons/io5"; // ✅ X 아이콘 추가
 
 interface SubscribeModalProps {
   nickname: string;
@@ -32,6 +33,11 @@ export default function SubscribeModal({ nickname, onClose }: SubscribeModalProp
   return (
     <ModalOverlay>
       <ModalContent>
+        {/* ✅ X 버튼 추가 */}
+        <CloseIcon onClick={onClose}>
+          <IoClose size={24} />
+        </CloseIcon>
+
         <ModalTitle>뉴스레터 구독</ModalTitle>
         <ModalDescription>
           <strong>{nickname || "사용자"}</strong>님이 작성하신 글을 뉴스레터로 보내드릴게요!
@@ -43,7 +49,6 @@ export default function SubscribeModal({ nickname, onClose }: SubscribeModalProp
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button text="뉴스레터 받기" onClick={handleSubmit} />
-        <CloseButton onClick={onClose}>닫기</CloseButton>
       </ModalContent>
     </ModalOverlay>
   );
@@ -71,6 +76,23 @@ const ModalContent = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
+  position: relative; /* ✅ X 버튼을 위한 포지션 */
+`;
+
+const CloseIcon = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 24px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
 
 const ModalTitle = styled.h2`
@@ -83,20 +105,4 @@ const ModalDescription = styled.p`
   font-size: 16px;
   margin-bottom: 20px;
   color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const CloseButton = styled.button`
-  margin-top: 15px;
-  padding: 8px 12px;
-  background: ${({ theme }) => theme.colors.secondary};
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.primary};
-  }
 `;
