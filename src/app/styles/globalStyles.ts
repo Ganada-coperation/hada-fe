@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import { gowunBatang } from "./fonts"; // Gowun Batang import
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -14,23 +15,20 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: ${({ theme }) => theme.fonts.body}; // ✅ 기본 폰트 (Noto Sans KR)
+    font-family: ${gowunBatang.style.fontFamily}, sans-serif; // ✅ Gowun Batang 기본 적용
     background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.textPrimary};
   }
 
   h1, h2, h3 {
-    ${({ theme }) => theme.fonts.heading_bold_24px};
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 34px;
     text-align: center;
   }
 
-  button {
-    ${({ theme }) => theme.fonts.body};
-    cursor: pointer;
-  }
-
-  .handwriting {
-    font-family: ${({ theme }) => theme.fonts.handwriting} !important; // ✅ 손글씨 폰트 적용
+  button, input, textarea {
+    font-family: ${gowunBatang.style.fontFamily}, sans-serif;
   }
 `;
 
