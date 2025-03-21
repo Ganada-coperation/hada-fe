@@ -3,14 +3,14 @@
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "@/app/styles/globalStyles";
 import theme from "@/app/styles/theme";
-
+import { gowunBatang } from "@/app/styles/fonts";
 import styled from "styled-components";
-import { notoSans } from "@/app/styles/fonts"; // ✅ 기본 폰트 추가
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className={notoSans.className}> {/* ✅ 기본 폰트 적용 */}
+      <body  className={gowunBatang.className}> {/* ✅ 기본 폰트 적용 */}
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           <Wrapper>

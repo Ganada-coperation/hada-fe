@@ -1,4 +1,3 @@
-import { fonts } from "./fonts";
 
 const theme = {
   colors: {
@@ -18,7 +17,7 @@ const theme = {
     wrapperPadding:
       "env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)",
   },
-  fonts, // ✅ 폰트 추가
+
 };
 
 export default theme;
