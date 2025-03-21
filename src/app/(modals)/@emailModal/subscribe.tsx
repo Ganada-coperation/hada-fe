@@ -1,66 +1,35 @@
-import { useState, ReactNode } from "react";
+import { ReactNode } from "react";
 import styled from "styled-components";
-import Input from "@/app/components/common/Input";
-import Button from "@/app/components/common/Button";
-import { IoClose } from "react-icons/io5"; // ✅ X 아이콘 추가
+import { IoClose } from "react-icons/io5";
 
 interface SubscribeModalProps {
   nickname: string;
   onClose: () => void;
-  children?: ReactNode; // ✅ children 추가
+  children?: ReactNode;
 }
 
 export default function SubscribeModal({ nickname, onClose, children }: SubscribeModalProps) {
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = async () => {
-    if (!email.includes("@")) {
-      alert("올바른 이메일을 입력해주세요.");
-      return;
-    }
-    try {
-      await fetch("/api/subscribe", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: { "Content-Type": "application/json" },
-      });
-      alert("뉴스레터 신청이 완료되었습니다!");
-      onClose();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <ModalOverlay>
       <ModalContent>
-        {/* ✅ X 버튼 추가 */}
         <CloseIcon onClick={onClose}>
           <IoClose size={24} />
         </CloseIcon>
 
         <ModalTitle>뉴스레터 구독</ModalTitle>
 
-        {/* ✅ children이 있으면 기본 문구 숨김 */}
-        {children || (
+        {!children && (
           <ModalDescription>
             <strong>{nickname || "사용자"}</strong>님이 작성하신 글을 뉴스레터로 보내드릴게요!
           </ModalDescription>
         )}
 
-        <Input
-          type="email"
-          placeholder="이메일을 입력하세요"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Button text="뉴스레터 받기" onClick={handleSubmit} />
+        {children}
       </ModalContent>
     </ModalOverlay>
   );
 }
 
-/* ✅ 스타일드 컴포넌트 정의 */
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -82,7 +51,7 @@ const ModalContent = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
-  position: relative; /* ✅ X 버튼을 위한 포지션 */
+  position: relative;
 `;
 
 const CloseIcon = styled.button`
