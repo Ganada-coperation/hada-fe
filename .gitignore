@@ -42,3 +42,9 @@ next-env.d.ts
 
 ## .idea
 .idea
+
+## serverless directories
+.serverless/
+
+## serverless 섫정 파일
+serverless.yaml
