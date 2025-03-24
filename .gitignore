@@ -48,3 +48,6 @@ next-env.d.ts
 
 ## serverless 섫정 파일
 serverless.yaml
+
+## docker-compose
+docker-compose.yml
