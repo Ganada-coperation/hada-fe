@@ -6,7 +6,8 @@ import Button from "@/app/components/common/Button";
 import BackButton from "@/app/components/common/BackButton";
 import SubscribeModal from "@/app/(modals)/@emailModal/subscribe";
 import { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+// import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { gowunBatang } from "@/app/styles/fonts";
 import { checkNickname } from "@/app/services/userService";
 import { savePost } from "@/app/services/postService";
@@ -136,10 +137,10 @@ export default function WritePage() {
   );
 }
 
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
+// const fadeIn = keyframes`
+//   from { opacity: 0; transform: translateY(-10px); }
+//   to { opacity: 1; transform: translateY(0); }
+// `;
 
 const StyledWriteWrapper = styled.div`
   display: flex;
