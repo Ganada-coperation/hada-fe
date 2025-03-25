@@ -90,7 +90,7 @@ export default function WritePage() {
           <>
             <Input placeholder="닉네임을 입력하세요" value={nickname} onChange={(e) => setNickname(e.target.value)} />
             {nicknameMessage && (
-              <StyledNicknameMessage isError={nicknameMessage.includes("이미")}>
+              <StyledNicknameMessage $isError={nicknameMessage.includes("이미")}>
                 {nicknameMessage}
               </StyledNicknameMessage>
             )}
@@ -158,9 +158,9 @@ const StyledTitle = styled.h1`
   margin-bottom: 16px;
 `;
 
-const StyledNicknameMessage = styled.p<{ isError: boolean }>`
+const StyledNicknameMessage = styled.p<{ $isError: boolean }>`
   font-size: 14px;
-  color: ${({ isError, theme }) => (isError ? "red" : theme.colors.primary)};
+  color: ${({ $isError, theme }) => ($isError ? "red" : theme.colors.primary)};
 `;
 
 const StyledWritePage = styled.div`
