@@ -6,7 +6,7 @@ import Button from "@/app/components/common/Button";
 import BackButton from "@/app/components/common/BackButton";
 import SubscribeModal from "@/app/(modals)/@emailModal/subscribe";
 import { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { gowunBatang } from "@/app/styles/fonts";
 import { checkNickname } from "@/app/services/userService";
 import { savePost } from "@/app/services/postService";
