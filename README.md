@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 하다 (HADA)
 
-## Getting Started
+## ✨ 개요
 
-First, run the development server:
+**'하다'는 중년층, 특히 50대 여성 가정주부를 위한 감정 기반 글쓰기 플랫폼**입니다.  
+AI 챗봇의 도움으로 글쓰기를 쉽게 시작하고, 정서적 안정과 사회적 연결을 돕는 콘텐츠를 창작하며,  
+작성한 글은 뉴스레터 형태로 구독자에게 전달됩니다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **대상**: 빈 둥지 증후군을 겪는 중년 여성
+- **기능**:
+  - 감정을 기반으로 글을 쓸 수 있는 AI 글쓰기 보조 챗봇
+  - 감정 선택 후 글 저장 기능
+  - 구독자를 위한 뉴스레터 발송
+  - 개인 글 아카이브 및 감정별 정리
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📌 프로젝트 현황
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **프로젝트 구조**:
+  - `hada-web`: 프론트엔드 (Next.js, TypeScript)
+  - `hada-chatbot`: 백엔드 (NestJS, MongoDB)
 
-## Learn More
+- **현재 상태**:
+  - ✅ MongoDB Atlas 연동 완료
+  - ✅ 기본적인 글쓰기 UI 구현
+  - ✅ 만족도 선택 후 글 저장 기능 구현 중
+  - 🔄 뉴스레터 구독/발송 API 연결 작업 진행 중
+  - 🔧 프론트-백엔드 통신 환경 변수 설정 및 테스트 중
 
-To learn more about Next.js, take a look at the following resources:
+- **향후 계획**:
+  - 사용자 피드백 기반 UI 개선
+  - 베타테스트 및 시니어 대상 유저 인터뷰 진행
+  - 정기 뉴스레터 자동화 기능 구현
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> 본 프로젝트는 성남 시니어산업혁신센터 대상 제안 및 베타 테스트용으로 개발 중입니다.

@@ -158,10 +158,13 @@ const StyledTitle = styled.h1`
   margin-bottom: 16px;
 `;
 
-const StyledNicknameMessage = styled.p<{ $isError: boolean }>`
+const StyledNicknameMessage = styled.p.withConfig({
+  shouldForwardProp: (prop) => prop !== '$isError',
+})<{ $isError: boolean }>`
   font-size: 14px;
   color: ${({ $isError, theme }) => ($isError ? "red" : theme.colors.primary)};
 `;
+
 
 const StyledWritePage = styled.div`
   font-family: ${gowunBatang.style.fontFamily};
