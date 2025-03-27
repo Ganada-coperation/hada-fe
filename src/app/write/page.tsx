@@ -13,6 +13,7 @@ import { checkNickname } from "@/app/services/userService";
 import { savePost } from "@/app/services/postService";
 import { subscribeNewsletter } from "@/app/services/newsletterService";
 import styled from "styled-components";
+import HomeButton from "@/app/components/common/HomeButton";
 
 export default function WritePage() {
   const [nickname, setNickname] = useState("");
@@ -56,6 +57,7 @@ export default function WritePage() {
   return (
     <StyledWriteWrapper>
       <StyledWritePage>
+        <HomeButton/>
         {(showTitleInput || showWriteEditor) && (
           <BackButton
             onClick={() => {
