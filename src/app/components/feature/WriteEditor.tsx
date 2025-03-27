@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+// hada-web/src/app/components/feature/WriteEditor.tsx
+
+"use client";
+
 import { gowunBatang } from "@/app/styles/fonts";
 import styled from "styled-components";
-import CompleteModal from "@/app/(modals)/@completeModal/CompleteModal"; // ✅ 모달 추가
 
 interface WriteEditorProps {
   content: string;
@@ -9,57 +11,17 @@ interface WriteEditorProps {
 }
 
 export default function WriteEditor({ content, setContent }: WriteEditorProps) {
-  const [isEditing, setIsEditing] = useState(true);
-  const [draftContent, setDraftContent] = useState(content);
-  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 상태 추가
-
-  // ✅ 작성 완료 (저장 후 모달 띄우기)
-  const handleSave = () => {
-    if (draftContent.trim().length > 0) {
-      setContent(draftContent);
-      setIsEditing(false);
-      setIsModalOpen(true); // ✅ 작성 완료 시 모달 열기
-    }
-  };
-
-  // ✅ 수정 버튼 클릭 시 다시 편집 가능
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  // ✅ content 상태와 draftContent를 동기화
-  useEffect(() => {
-    setDraftContent(content);
-  }, [content]);
-
   return (
     <EditorWrapper>
-      {isEditing ? (
-        <StyledTextArea
-          value={draftContent}
-          onChange={(e) => setDraftContent(e.target.value)}
-          placeholder="여기에 글을 작성하세요..."
-        />
-      ) : (
-        <ContentPreview>{content || "작성된 글이 없습니다."}</ContentPreview>
-      )}
-
-      {/* ✅ 버튼 UI (작성 완료 → 수정하기 버튼 전환) */}
-      {isEditing ? (
-        <SaveButton onClick={handleSave} disabled={draftContent.trim().length === 0}>
-          작성 완료
-        </SaveButton>
-      ) : (
-        <EditButton onClick={handleEdit}>수정하기</EditButton>
-      )}
-
-      {/* ✅ 작성 완료 모달 (CompleteModal 활용) */}
-      {isModalOpen && <CompleteModal onClose={() => setIsModalOpen(false)} />}
+      <StyledTextArea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="여기에 글을 작성하세요..."
+      />
     </EditorWrapper>
   );
 }
 
-// ✅ 스타일 정의
 const EditorWrapper = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.layout.maxWidth};
@@ -68,11 +30,9 @@ const EditorWrapper = styled.div`
   align-items: center;
 `;
 
-// ✅ 글쓰기 (편집 모드)
 const StyledTextArea = styled.textarea`
   width: 100%;
   height: 300px;
-  background: url("/images/background-grid.png") no-repeat center;
   background-size: cover;
   font-family: ${gowunBatang.style.fontFamily};
   font-size: 16px;
@@ -81,53 +41,4 @@ const StyledTextArea = styled.textarea`
   resize: none;
   outline: none;
   transition: all 0.3s ease-in-out;
-`;
-
-// ✅ 저장된 글 (미리보기)
-const ContentPreview = styled.div`
-  width: 100%;
-  height: 300px;
-  padding: 16px;
-  font-family: ${gowunBatang.style.fontFamily};
-  font-size: 16px;
-  background: ${({ theme }) => theme.colors.cardBackground};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
-  text-align: left;
-  white-space: pre-wrap;
-  cursor: default;
-  transition: all 0.3s ease-in-out;
-`;
-
-// ✅ 작성 완료 버튼
-const SaveButton = styled.button`
-  margin-top: 10px;
-  width: 200px;
-  padding: 12px;
-  font-size: 16px;
-  font-family: ${gowunBatang.style.fontFamily};
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.textMuted};
-    cursor: not-allowed;
-  }
-
-  &:hover:enabled {
-    background-color: ${({ theme }) => theme.colors.secondary};
-  }
-`;
-
-// ✅ 수정 버튼
-const EditButton = styled(SaveButton)`
-  background-color: ${({ theme }) => theme.colors.secondary};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primary};
-  }
 `;

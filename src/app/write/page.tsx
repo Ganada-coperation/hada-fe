@@ -1,38 +1,33 @@
+// hada-web/src/app/write/page.tsx
+
 "use client";
 
+import { useState, useEffect } from "react";
 import WriteEditor from "@/app/components/feature/WriteEditor";
 import Input from "@/app/components/common/Input";
 import Button from "@/app/components/common/Button";
 import BackButton from "@/app/components/common/BackButton";
-import SubscribeModal from "@/app/(modals)/@emailModal/subscribe";
-import { useState, useEffect } from "react";
-import styled from "styled-components";
+import CompleteModal from "@/app/(modals)/@completeModal/CompleteModal";
 import { gowunBatang } from "@/app/styles/fonts";
 import { checkNickname } from "@/app/services/userService";
 import { savePost } from "@/app/services/postService";
 import { subscribeNewsletter } from "@/app/services/newsletterService";
-import { isValidEmail } from "@/app/utils/validation";
+import styled from "styled-components";
 
 export default function WritePage() {
   const [nickname, setNickname] = useState("");
   const [nicknameMessage, setNicknameMessage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [email, setEmail] = useState("");
-
   const [showTitleInput, setShowTitleInput] = useState(false);
   const [showWriteEditor, setShowWriteEditor] = useState(false);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (nickname.length > 0) {
       checkNickname(nickname)
         .then((data) => {
-          if (data.available) {
-            setNicknameMessage("멋진 필명이네요!");
-          } else {
-            setNicknameMessage("이미 사용 중인 필명입니다");
-          }
+          setNicknameMessage(data.available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
         })
         .catch(() => setNicknameMessage("오류가 발생했습니다."));
     } else {
@@ -40,37 +35,17 @@ export default function WritePage() {
     }
   }, [nickname]);
 
-  async function handleSavePost() {
-    if (!nickname || !title || !content) {
-      alert("닉네임, 제목, 내용을 입력해주세요.");
-      return;
-    }
-
-    try {
-      await savePost(nickname, title, content);
-      alert("글이 성공적으로 저장되었습니다!");
-    } catch (error) {
-      console.error("글 저장 실패:", error);
-      alert("글 저장 중 오류가 발생했습니다.");
-    }
-  }
-
-  async function handleSubscribe() {
-    if (!isValidEmail(email)) {
-      alert("유효한 이메일을 입력하세요.");
-      return;
-    }
-
+  const handleSaveFlow = async (email: string) => {
     try {
       await subscribeNewsletter(email);
-      alert("뉴스레터 구독이 완료되었습니다!");
-      setIsModalOpen(false);
-      setEmail("");
+      await savePost(nickname, title, content);
+      alert("글 저장과 뉴스레터 구독이 완료되었습니다!");
+      setIsCompleteModalOpen(false);
     } catch (error) {
-      console.error("뉴스레터 구독 실패:", error);
-      alert("구독 중 오류가 발생했습니다.");
+      console.error("저장 또는 구독 실패:", error);
+      alert("오류가 발생했습니다.");
     }
-  }
+  };
 
   return (
     <StyledWriteWrapper>
@@ -112,30 +87,24 @@ export default function WritePage() {
         {showWriteEditor && (
           <>
             <WriteEditor content={content} setContent={setContent} />
-            <Button text="글 저장하기" onClick={handleSavePost} disabled={!nickname || !title || content.length < 5} />
-            <Button text="뉴스레터로 받아보기" onClick={() => setIsModalOpen(true)} disabled={content.length < 5} />
+            <Button
+              text="글 저장하기"
+              onClick={() => setIsCompleteModalOpen(true)}
+              disabled={!nickname || !title || content.length < 5}
+            />
           </>
         )}
 
-        {isModalOpen && (
-          <SubscribeModal nickname={nickname} onClose={() => setIsModalOpen(false)}>
-            <p style={{ textAlign: "center", marginBottom: "12px" }}>
-              나와 비슷한 사람이 쓴 글이나, <br /> 내가 직접 쓴 글을 뉴스레터로 받아볼 수 있어요!
-            </p>
-            <Input
-              type="email"
-              placeholder="이메일을 입력하세요"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Button text="구독하기" onClick={handleSubscribe} />
-          </SubscribeModal>
+        {isCompleteModalOpen && (
+          <CompleteModal
+            onConfirm={handleSaveFlow}
+            onClose={() => setIsCompleteModalOpen(false)}
+          />
         )}
       </StyledWritePage>
     </StyledWriteWrapper>
   );
 }
-
 
 const StyledWriteWrapper = styled.div`
   display: flex;
@@ -160,7 +129,6 @@ const StyledNicknameMessage = styled.p.withConfig({
   font-size: 14px;
   color: ${({ $isError, theme }) => ($isError ? "red" : theme.colors.primary)};
 `;
-
 
 const StyledWritePage = styled.div`
   font-family: ${gowunBatang.style.fontFamily};
