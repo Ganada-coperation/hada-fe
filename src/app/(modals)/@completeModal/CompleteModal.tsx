@@ -32,7 +32,7 @@ export default function CompleteModal({ onConfirm, onClose }: CompleteModalProps
       <h2 style={{ textAlign: "center", marginBottom: "8px" }}>작성 완료 🎉</h2>
       <p style={{ textAlign: "center", marginBottom: "16px" }}>
         입력하신 글이 곧 저장됩니다! <br />
-        이메일을 입력하면 뉴스레터도 함께 받아보실 수 있어요 ✉️
+        이메일을 입력하면  당신의 글을 뉴스레터로 <br />받아보실 수 있어요 ✉️
       </p>
 
       <Input
