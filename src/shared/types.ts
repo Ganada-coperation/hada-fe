@@ -5,6 +5,6 @@ export type FontsTypes = {
 
 declare global {
   interface Window {
-    dataLayer: Record<string, any>[];
+    dataLayer: Record<string, unknown>[];
   }
 }
