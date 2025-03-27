@@ -39,6 +39,12 @@ export default function WritePage() {
     try {
       await subscribeNewsletter(email);
       await savePost(nickname, title, content);
+  
+      // ✅ GTM으로 이벤트 전송
+      window.dataLayer?.push({
+        event: "post_saved",
+      });
+  
       alert("글 저장과 뉴스레터 구독이 완료되었습니다!");
       setIsCompleteModalOpen(false);
     } catch (error) {
@@ -46,7 +52,7 @@ export default function WritePage() {
       alert("오류가 발생했습니다.");
     }
   };
-
+  
   return (
     <StyledWriteWrapper>
       <StyledWritePage>

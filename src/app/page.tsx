@@ -18,9 +18,15 @@ export default function HomePage() {
       alert("올바른 이메일을 입력하세요.");
       return;
     }
-
+  
     try {
       const result = await subscribeNewsletter(email);
+  
+      // ✅ GTM 이벤트 전송
+      window.dataLayer?.push({
+        event: "newsletter_submitted",
+      });
+  
       alert("뉴스레터 구독이 완료되었습니다!");
       console.log("구독 성공:", result);
       setIsModalOpen(false);
@@ -29,6 +35,7 @@ export default function HomePage() {
       alert("구독 중 오류가 발생했습니다.");
     }
   }
+  
 
   return (
     <Container>
@@ -36,11 +43,42 @@ export default function HomePage() {
       <Catchphrase>나의 이야기를 하다.</Catchphrase>
 
       <ButtonGroup>
-        <a href="http://pf.kakao.com/_kxdKXn" target="_blank" rel="noopener noreferrer">
-          <StyledButton text="🗨️ 챗봇 대화해보기" onClick={() => {}} />
-        </a>
-        <StyledButton text="✍️ 글쓰러 가기" onClick={() => router.push("/write")} />
-        <StyledButton text="📩 뉴스레터 구독하기" onClick={() => setIsModalOpen(true)} />
+      <a
+  href="http://pf.kakao.com/_kxdKXn"
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={() => {
+    window.dataLayer?.push({
+      event: "cta_clicked",
+      label: "chatbot", // ✅ 챗봇 버튼 클릭
+    });
+  }}
+>
+  <StyledButton text="🗨️ 챗봇 대화해보기" onClick={() => {}} />
+</a>
+
+<StyledButton
+  text="✍️ 글쓰러 가기"
+  onClick={() => {
+    window.dataLayer?.push({
+      event: "cta_clicked",
+      label: "write", // ✅ 글쓰기 버튼 클릭
+    });
+    router.push("/write");
+  }}
+/>
+
+<StyledButton
+  text="📩 뉴스레터 구독하기"
+  onClick={() => {
+    window.dataLayer?.push({
+      event: "cta_clicked",
+      label: "newsletter", // ✅ 뉴스레터 버튼 클릭
+    });
+    setIsModalOpen(true);
+  }}
+/>
+
       </ButtonGroup>
 
       {isModalOpen && (
