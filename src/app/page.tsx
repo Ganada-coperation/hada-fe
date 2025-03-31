@@ -5,12 +5,14 @@ import styled, { keyframes } from "styled-components";
 import { gowunBatang } from "@/app/styles/fonts";
 import { useRouter } from "next/navigation";
 import SubscribeModal from "@/app/(modals)/@emailModal/subscribe";
+import ChatbotModal from "@/app/(modals)/@chatbotModal/ChatbotModal";
 import Button from "@/app/components/common/Button";
 import { subscribeNewsletter } from "@/app/services/newsletterService";
 
 export default function HomePage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
   const [email, setEmail] = useState("");
 
   async function handleSubscribe() {
@@ -18,15 +20,14 @@ export default function HomePage() {
       alert("올바른 이메일을 입력하세요.");
       return;
     }
-  
+
     try {
       const result = await subscribeNewsletter(email);
-  
-      // ✅ GTM 이벤트 전송
+
       window.dataLayer?.push({
         event: "newsletter_submitted",
       });
-  
+
       alert("뉴스레터 구독이 완료되었습니다!");
       console.log("구독 성공:", result);
       setIsModalOpen(false);
@@ -35,7 +36,6 @@ export default function HomePage() {
       alert("구독 중 오류가 발생했습니다.");
     }
   }
-  
 
   return (
     <Container>
@@ -43,46 +43,43 @@ export default function HomePage() {
       <Catchphrase>나의 이야기를 하다.</Catchphrase>
 
       <ButtonGroup>
-      <a
-  href="http://pf.kakao.com/_kxdKXn"
-  target="_blank"
-  rel="noopener noreferrer"
-  onClick={() => {
-    window.dataLayer?.push({
-      event: "cta_clicked",
-      label: "chatbot", // ✅ 챗봇 버튼 클릭
-    });
-  }}
->
-  <StyledButton text="🗨️ 챗봇 대화해보기" onClick={() => {}} />
-</a>
+        <StyledButton
+          text="🗨️ 챗봇 대화해보기"
+          onClick={() => {
+            window.dataLayer?.push({
+              event: "cta_clicked",
+              label: "chatbot",
+            });
+            setIsChatbotModalOpen(true);
+          }}
+        />
 
-<StyledButton
-  text="✍️ 글쓰러 가기"
-  onClick={() => {
-    window.dataLayer?.push({
-      event: "cta_clicked",
-      label: "write", // ✅ 글쓰기 버튼 클릭
-    });
-    router.push("/write");
-  }}
-/>
+        <StyledButton
+          text="✍️ 글쓰러 가기"
+          onClick={() => {
+            window.dataLayer?.push({
+              event: "cta_clicked",
+              label: "write",
+            });
+            router.push("/write");
+          }}
+        />
 
-<StyledButton
-  text="📩 뉴스레터 구독하기"
-  onClick={() => {
-    window.dataLayer?.push({
-      event: "cta_clicked",
-      label: "newsletter", // ✅ 뉴스레터 버튼 클릭
-    });
-    setIsModalOpen(true);
-  }}
-/>
-
+        <StyledButton
+          text="📩 뉴스레터 구독하기"
+          onClick={() => {
+            window.dataLayer?.push({
+              event: "cta_clicked",
+              label: "newsletter",
+            });
+            setIsModalOpen(true);
+          }}
+        />
       </ButtonGroup>
 
+      {/* 뉴스레터 모달 */}
       {isModalOpen && (
-        <SubscribeModal nickname="내" onClose={() => setIsModalOpen(false)} >
+        <SubscribeModal nickname="내" onClose={() => setIsModalOpen(false)}>
           <ModalDescription>
             나와 비슷한 사람이 쓴 글이나, <br /> 내가 직접 쓴 글을 뉴스레터로 받아볼 수 있어요!
           </ModalDescription>
@@ -95,11 +92,16 @@ export default function HomePage() {
           <StyledButton text="구독하기" onClick={handleSubscribe} />
         </SubscribeModal>
       )}
+
+      {/* 챗봇 모달 */}
+      {isChatbotModalOpen && (
+        <ChatbotModal onClose={() => setIsChatbotModalOpen(false)} />
+      )}
     </Container>
   );
 }
 
-// ✅ 애니메이션
+// 스타일 영역
 const fadeInMove = keyframes`
   from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
@@ -110,7 +112,6 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-// ✅ 스타일
 const Container = styled.div`
   font-family: ${gowunBatang.style.fontFamily};
   display: flex;
@@ -179,3 +180,4 @@ const Input = styled.input`
   font-size: 16px;
   text-align: center;
 `;
+
