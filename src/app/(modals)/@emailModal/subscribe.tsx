@@ -1,21 +1,77 @@
+"use client";
+
+import { useState } from "react";
 import Modal from "@/app/components/common/Modal";
-import { ReactNode } from "react";
+import Input from "@/app/components/common/Input";
+import Button from "@/app/components/common/Button";
+import styled from "styled-components";
+import { isValidEmail } from "@/app/utils/validation";
 
 interface SubscribeModalProps {
-  nickname: string;
   onClose: () => void;
-  children?: ReactNode;
+  onSubmit?: (email: string) => Promise<void>;
+  showInput?: boolean;
 }
 
-export default function SubscribeModal({ nickname, onClose, children }: SubscribeModalProps) {
+export default function SubscribeModal({
+  onClose,
+  onSubmit,
+  showInput = false,
+}: SubscribeModalProps) {
+  const [email, setEmail] = useState("");
+
+  const handleClick = async () => {
+    if (!isValidEmail(email)) {
+      alert("올바른 이메일을 입력하세요.");
+      return;
+    }
+
+    if (onSubmit) {
+      try {
+        await onSubmit(email);
+      } catch (err) {
+        console.error("구독 처리 중 오류:", err);
+        alert("구독 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
   return (
     <Modal onClose={onClose} title="뉴스레터 구독">
-      {!children && (
-        <p style={{ marginBottom: "16px" }}>
-          <strong>{nickname || "사용자"}</strong>님이 작성하신 글을 뉴스레터로 보내드릴게요!
-        </p>
+      <Description>
+        나와 비슷한 사람이 쓴 글이나, <br />
+        내가 직접 쓴 글을 뉴스레터로 보내드릴게요!
+      </Description>
+
+      {showInput && (
+        <>
+          <StyledInput
+            type="email"
+            placeholder="이메일을 입력하세요"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <StyledButton text="구독하기" onClick={handleClick} />
+        </>
       )}
-      {children}
     </Modal>
   );
 }
+
+const Description = styled.p`
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+const StyledInput = styled(Input)`
+  margin: 10px 0;
+  text-align: center;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+  margin-top: 8px;
+  font-size: 16px;
+`;

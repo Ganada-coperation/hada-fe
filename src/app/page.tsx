@@ -13,21 +13,12 @@ export default function HomePage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
-  const [email, setEmail] = useState("");
 
-  async function handleSubscribe() {
-    if (!email.includes("@")) {
-      alert("올바른 이메일을 입력하세요.");
-      return;
-    }
 
+  async function handleSubscribe(email: string) {
     try {
       const result = await subscribeNewsletter(email);
-
-      window.dataLayer?.push({
-        event: "newsletter_submitted",
-      });
-
+      window.dataLayer?.push({ event: "newsletter_submitted" });
       alert("뉴스레터 구독이 완료되었습니다!");
       console.log("구독 성공:", result);
       setIsModalOpen(false);
@@ -36,7 +27,7 @@ export default function HomePage() {
       alert("구독 중 오류가 발생했습니다.");
     }
   }
-
+  
   return (
     <Container>
       <Logo>HADA</Logo>
@@ -77,20 +68,14 @@ export default function HomePage() {
         />
       </ButtonGroup>
 
-      {/* 뉴스레터 모달 */}
-      {isModalOpen && (
-        <SubscribeModal nickname="내" onClose={() => setIsModalOpen(false)}>
-          <ModalDescription>
-            나와 비슷한 사람이 쓴 글이나, <br /> 내가 직접 쓴 글을 뉴스레터로 받아볼 수 있어요!
-          </ModalDescription>
-          <Input
-            type="email"
-            placeholder="이메일을 입력하세요"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <StyledButton text="구독하기" onClick={handleSubscribe} />
-        </SubscribeModal>
+    
+        {/* 뉴스레터 모달 */}
+        {isModalOpen && (
+        <SubscribeModal
+          showInput
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleSubscribe}
+        />
       )}
 
       {/* 챗봇 모달 */}
@@ -159,25 +144,5 @@ const StyledButton = styled(Button)`
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
     transform: scale(1.05);
   }
-`;
-
-const ModalDescription = styled.p`
-  font-family: ${gowunBatang.style.fontFamily};
-  font-size: 16px;
-  margin-bottom: 16px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  text-align: center;
-  line-height: 1.5;
-`;
-
-const Input = styled.input`
-  font-family: ${gowunBatang.style.fontFamily};
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid ${({ theme }) => theme.colors.textSecondary};
-  border-radius: 5px;
-  font-size: 16px;
-  text-align: center;
 `;
 
