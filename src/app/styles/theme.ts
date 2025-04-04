@@ -9,6 +9,7 @@ const theme = {
     textPrimary: "#000000",
     textSecondary: "#666666",
     textMuted: "#A3A3A3",
+    floating:  "#fae100",
   },
   layout: {
     maxWidth: "440px",
