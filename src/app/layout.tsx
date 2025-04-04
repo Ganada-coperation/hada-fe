@@ -1,3 +1,5 @@
+// src/app/layout.tsx
+
 "use client";
 
 import { ThemeProvider } from "styled-components";
@@ -5,12 +7,12 @@ import GlobalStyle from "@/app/styles/globalStyles";
 import theme from "@/app/styles/theme";
 import { gowunBatang } from "@/app/styles/fonts";
 import styled from "styled-components";
+import FloatingKakaoButton from "@/app/components/common/FloatingKakaoButton";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <head>
-        {/* ✅ Google Tag Manager Script 삽입 */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -25,7 +27,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className={gowunBatang.className}>
-        {/* ✅ noscript 버전 (body 맨 위에 위치해야 함) */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-5X95W8N8"
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <GlobalStyle />
           <Wrapper>
             <MainContent>{children}</MainContent>
+            <FloatingKakaoButton />
           </Wrapper>
         </ThemeProvider>
       </body>
@@ -46,8 +48,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 
-// ✅ 스타일 유지
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
