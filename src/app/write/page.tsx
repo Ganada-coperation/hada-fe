@@ -1,5 +1,3 @@
-// hada-web/src/app/write/page.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,8 +10,10 @@ import { gowunBatang } from "@/app/styles/fonts";
 import { checkNickname } from "@/app/services/userService";
 import { savePost } from "@/app/services/postService";
 import { subscribeNewsletter } from "@/app/services/newsletterService";
+import { sendPostEmail } from "@/app/services/postEmailService";
 import styled from "styled-components";
 import HomeButton from "@/app/components/common/HomeButton";
+import { toast } from "react-toastify";
 
 export default function WritePage() {
   const [nickname, setNickname] = useState("");
@@ -25,39 +25,53 @@ export default function WritePage() {
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (nickname.length > 0) {
-      checkNickname(nickname)
-        .then((data) => {
-          setNicknameMessage(data.available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
-        })
-        .catch(() => setNicknameMessage("오류가 발생했습니다."));
-    } else {
+    if (nickname.length === 0) {
       setNicknameMessage(null);
+      return;
     }
+
+    checkNickname(nickname)
+      .then((data) => {
+        setNicknameMessage(data.available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
+      })
+      .catch(() => setNicknameMessage("오류가 발생했습니다."));
   }, [nickname]);
 
-  const handleSaveFlow = async (email: string) => {
+  /** ✅ 이메일 저장 + 글 저장 + 메일 발송 비즈니스 로직 함수 */
+  const handleCompleteFlow = async (email: string) => {
     try {
+      // 이메일 저장 (뉴스레터용)
       await subscribeNewsletter(email);
+
+      // 글 저장
       await savePost(nickname, title, content);
-  
-      // ✅ GTM으로 이벤트 전송
-      window.dataLayer?.push({
-        event: "post_saved",
-      });
-  
-      alert("글 저장과 뉴스레터 구독이 완료되었습니다!");
+
+      // 작성한 글 메일 전송
+      await sendPostEmail(email, formatPostContent(title, content));
+
+      // GTM 이벤트
+      window.dataLayer?.push({ event: "post_saved" });
+
+      // 사용자 피드백
+      toast.success("당신의 글을 이메일로 보내드렸어요!");
+
       setIsCompleteModalOpen(false);
     } catch (error) {
-      console.error("저장 또는 구독 실패:", error);
-      alert("오류가 발생했습니다.");
+      console.error("저장 또는 메일 발송 실패:", error);
+      toast.error("저장 또는 메일 전송 중 오류가 발생했습니다.");
     }
   };
-  
+
+  /** ✅ 메일 본문 포맷팅 유틸 함수 */
+  const formatPostContent = (title: string, content: string) => {
+    return `제목: ${title}\n\n내용:\n${content}`;
+  };
+
   return (
     <StyledWriteWrapper>
       <StyledWritePage>
-        <HomeButton/>
+        <HomeButton />
+
         {(showTitleInput || showWriteEditor) && (
           <BackButton
             onClick={() => {
@@ -71,7 +85,11 @@ export default function WritePage() {
 
         {!showTitleInput && (
           <>
-            <Input placeholder="닉네임을 입력하세요" value={nickname} onChange={(e) => setNickname(e.target.value)} />
+            <Input
+              placeholder="닉네임을 입력하세요"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
             {nicknameMessage && (
               <StyledNicknameMessage $isError={nicknameMessage.includes("이미")}>
                 {nicknameMessage}
@@ -87,8 +105,16 @@ export default function WritePage() {
 
         {showTitleInput && !showWriteEditor && (
           <>
-            <Input placeholder="제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <Button text="확인" onClick={() => title.length > 0 && setShowWriteEditor(true)} disabled={title.length === 0} />
+            <Input
+              placeholder="제목을 입력하세요"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <Button
+              text="확인"
+              onClick={() => title.length > 0 && setShowWriteEditor(true)}
+              disabled={title.length === 0}
+            />
           </>
         )}
 
@@ -105,7 +131,7 @@ export default function WritePage() {
 
         {isCompleteModalOpen && (
           <CompleteModal
-            onConfirm={handleSaveFlow}
+            onConfirm={handleCompleteFlow}
             onClose={() => setIsCompleteModalOpen(false)}
           />
         )}
@@ -114,6 +140,7 @@ export default function WritePage() {
   );
 }
 
+// ✅ 스타일 컴포넌트 유지
 const StyledWriteWrapper = styled.div`
   display: flex;
   justify-content: center;
