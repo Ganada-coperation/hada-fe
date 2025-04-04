@@ -1,27 +1,30 @@
-// hada-web/src/app/(modals)/@chatbotModal/ChatbotModal.tsx
-
 "use client";
 
 import Modal from "@/app/components/common/Modal";
 import styled from "styled-components";
 import { gowunBatang } from "@/app/styles/fonts";
+import { chatWithKakao } from "@/app/utils/kakao";
 
 interface ChatbotModalProps {
   onClose: () => void;
 }
 
 export default function ChatbotModal({ onClose }: ChatbotModalProps) {
+  const handleChatStart = () => {
+    window.dataLayer?.push({
+      event: "cta_clicked",
+      label: "kakao_chat",
+    });
+    chatWithKakao();
+  };
+
   return (
     <Modal onClose={onClose} title="카카오톡 챗봇 이용 안내">
       <Description>
-      &ldquo;하다&rdquo;  카카오 채널에서 챗봇과 대화하고 <br />
+        &ldquo;하다&rdquo; 카카오 채널에서 챗봇과 대화하고 <br />
         글 생성도 해볼 수 있어요!
       </Description>
-      <ChatbotButton
-        onClick={() =>
-          window.open("http://pf.kakao.com/_kxdKXn", "_blank", "noopener,noreferrer")
-        }
-      >
+      <ChatbotButton onClick={handleChatStart}>
         대화해보기
       </ChatbotButton>
     </Modal>
