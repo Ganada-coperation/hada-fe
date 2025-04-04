@@ -1,6 +1,8 @@
+// src/app/page.tsx
+
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { gowunBatang } from "@/app/styles/fonts";
 import { useRouter } from "next/navigation";
@@ -8,69 +10,60 @@ import SubscribeModal from "@/app/(modals)/@emailModal/subscribe";
 import ChatbotModal from "@/app/(modals)/@chatbotModal/ChatbotModal";
 import Button from "@/app/components/common/Button";
 import { subscribeNewsletter } from "@/app/services/newsletterService";
+import { loadKakaoSdk } from "@/app/utils/kakao";
 
 export default function HomePage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
 
+  useEffect(() => {
+    loadKakaoSdk().catch(() => {
+      console.error("카카오 SDK 로딩 실패");
+    });
+  }, []);
 
-  async function handleSubscribe(email: string) {
+  const handleSubscribe = async (email: string) => {
     try {
-      const result = await subscribeNewsletter(email);
+      await subscribeNewsletter(email);
       window.dataLayer?.push({ event: "newsletter_submitted" });
       alert("뉴스레터 구독이 완료되었습니다!");
-      console.log("구독 성공:", result);
       setIsModalOpen(false);
     } catch (error) {
       console.error("뉴스레터 구독 실패:", error);
       alert("구독 중 오류가 발생했습니다.");
     }
-  }
-  
+  };
+
+  const openChatbotModal = () => {
+    window.dataLayer?.push({ event: "cta_clicked", label: "kakao_chat_modal_open" });
+    setIsChatbotModalOpen(true);
+  };
+
   return (
     <Container>
       <Logo>HADA</Logo>
       <Catchphrase>나의 이야기를 하다.</Catchphrase>
 
       <ButtonGroup>
-        <StyledButton
-          text="🗨️ 챗봇 대화해보기"
-          onClick={() => {
-            window.dataLayer?.push({
-              event: "cta_clicked",
-              label: "chatbot",
-            });
-            setIsChatbotModalOpen(true);
-          }}
-        />
-
+        <StyledButton text="🗨️ 챗봇 대화해보기" onClick={openChatbotModal} />
         <StyledButton
           text="✍️ 글쓰러 가기"
           onClick={() => {
-            window.dataLayer?.push({
-              event: "cta_clicked",
-              label: "write",
-            });
+            window.dataLayer?.push({ event: "cta_clicked", label: "write" });
             router.push("/write");
           }}
         />
-
         <StyledButton
           text="📩 뉴스레터 구독하기"
           onClick={() => {
-            window.dataLayer?.push({
-              event: "cta_clicked",
-              label: "newsletter",
-            });
+            window.dataLayer?.push({ event: "cta_clicked", label: "newsletter" });
             setIsModalOpen(true);
           }}
         />
       </ButtonGroup>
 
-    
-        {/* 뉴스레터 모달 */}
-        {isModalOpen && (
+      {isModalOpen && (
         <SubscribeModal
           showInput
           onClose={() => setIsModalOpen(false)}
@@ -78,7 +71,6 @@ export default function HomePage() {
         />
       )}
 
-      {/* 챗봇 모달 */}
       {isChatbotModalOpen && (
         <ChatbotModal onClose={() => setIsChatbotModalOpen(false)} />
       )}
@@ -86,7 +78,7 @@ export default function HomePage() {
   );
 }
 
-// 스타일 영역
+// 스타일
 const fadeInMove = keyframes`
   from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
@@ -145,4 +137,3 @@ const StyledButton = styled(Button)`
     transform: scale(1.05);
   }
 `;
-
