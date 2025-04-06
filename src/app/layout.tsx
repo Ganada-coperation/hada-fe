@@ -3,11 +3,11 @@
 "use client";
 
 import { ThemeProvider } from "styled-components";
-import GlobalStyle from "@/app/styles/globalStyles";
-import theme from "@/app/styles/theme";
-import { gowunBatang } from "@/app/styles/fonts";
+import GlobalStyle from "@styles/globalStyles";
+import theme from "@styles/theme";
+import { gowunBatang } from "@styles/fonts";
 import styled from "styled-components";
-import FloatingKakaoButton from "@/app/components/common/FloatingKakaoButton";
+import FloatingKakaoButton from "@components/common/FloatingKakaoButton";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

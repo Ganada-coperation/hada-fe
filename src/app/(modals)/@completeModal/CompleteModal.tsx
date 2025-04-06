@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Modal from "@/app/components/common/Modal";
-import Input from "@/app/components/common/Input";
-import Button from "@/app/components/common/Button";
-import { isValidEmail } from "@/app/utils/validation";
+import Modal from "@components/common/Modal";
+import Input from "@components/common/Input";
+import Button from "@components/common/Button";
+import { isValidEmail } from "@utils/validation";
 import styled from "styled-components";
+import { rgba } from "polished";
+
 
 interface CompleteModalProps {
   onConfirm: (email: string, mood: string) => void;
@@ -100,7 +102,7 @@ const MoodOption = styled.button<{ $selected: boolean }>`
   padding: 6px 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   background-color: ${({ $selected, theme }) =>
-    $selected ? theme.colors.primary : "transparent"};
+    $selected ?  rgba(theme.colors.primary, 0.55)  : "transparent"};
   color: ${({ $selected, theme }) =>
     $selected ? "#fff" : theme.colors.textPrimary};
   border-radius: 6px;

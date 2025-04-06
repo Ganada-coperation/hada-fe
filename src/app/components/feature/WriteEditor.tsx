@@ -2,7 +2,7 @@
 
 "use client";
 
-import { gowunBatang } from "@/app/styles/fonts";
+import { gowunBatang } from "@styles/fonts";
 import styled from "styled-components";
 
 interface WriteEditorProps {

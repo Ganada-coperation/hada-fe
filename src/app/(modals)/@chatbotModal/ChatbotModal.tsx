@@ -1,9 +1,9 @@
 "use client";
 
-import Modal from "@/app/components/common/Modal";
+import Modal from "@components/common/Modal";
 import styled from "styled-components";
-import { gowunBatang } from "@/app/styles/fonts";
-import { chatWithKakao } from "@/app/utils/kakao";
+import { gowunBatang } from "@styles/fonts";
+import { chatWithKakao } from "@utils/kakao";
 
 interface ChatbotModalProps {
   onClose: () => void;

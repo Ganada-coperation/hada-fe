@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Modal from "@/app/components/common/Modal";
-import Input from "@/app/components/common/Input";
-import Button from "@/app/components/common/Button";
+import Modal from "@components/common/Modal";
+import Input from "@components/common/Input";
+import Button from "@components/common/Button";
 import styled from "styled-components";
-import { isValidEmail } from "@/app/utils/validation";
+import { isValidEmail } from "@utils/validation";
 
 interface SubscribeModalProps {
   onClose: () => void;

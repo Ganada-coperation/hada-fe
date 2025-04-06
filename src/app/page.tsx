@@ -4,13 +4,14 @@
 
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { gowunBatang } from "@/app/styles/fonts";
+import { gowunBatang } from "@styles/fonts";
 import { useRouter } from "next/navigation";
-import SubscribeModal from "@/app/(modals)/@emailModal/subscribe";
-import ChatbotModal from "@/app/(modals)/@chatbotModal/ChatbotModal";
-import Button from "@/app/components/common/Button";
-import { subscribeNewsletter } from "@/app/services/newsletterService";
-import { loadKakaoSdk } from "@/app/utils/kakao";
+import SubscribeModal from "@modals/@emailModal/subscribe";
+import ChatbotModal from "@modals/@chatbotModal/ChatbotModal";
+import Button from "@components/common/Button";
+import { subscribeNewsletter } from "@services/newsletterService";
+import { loadKakaoSdk } from "@utils/kakao";
+import { darken } from "polished";
 
 export default function HomePage() {
   const router = useRouter();
@@ -131,9 +132,20 @@ const StyledButton = styled(Button)`
   font-weight: 480;
   padding: 14px 10px;
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
 
   &:hover {
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
-    transform: scale(1.05);
+    transform: scale(1.08);
+    background-color: ${({ theme }) => darken(0.35, theme.colors.primary)};
+    color: white;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0.9;
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   }
 `;
+
