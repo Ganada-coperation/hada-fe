@@ -38,19 +38,20 @@ export default function WritePage() {
   }, [nickname]);
 
   /** ✅ 이메일 저장 + 글 저장 + 메일 발송 비즈니스 로직 함수 */
-  const handleCompleteFlow = async (email: string) => {
+  const handleCompleteFlow = async (email: string, mood: string) => {
     try {
       // 이메일 저장 (뉴스레터용)
       await subscribeNewsletter(email);
 
       // 글 저장
-      await savePost(nickname, title, content);
+      await savePost(nickname, title, content, email, mood);
 
       // 작성한 글 메일 전송
       await sendPostEmail(email, formatPostContent(title, content));
 
       // GTM 이벤트
-      window.dataLayer?.push({ event: "post_saved" });
+      window.dataLayer?.push({ event: "post_saved", mood,  eventCategory: "post",
+        eventLabel: "write_complete",});
 
       // 사용자 피드백
       toast.success("당신의 글을 이메일로 보내드렸어요!");
@@ -124,7 +125,7 @@ export default function WritePage() {
             <Button
               text="글 저장하기"
               onClick={() => setIsCompleteModalOpen(true)}
-              disabled={!nickname || !title || content.length < 5}
+              disabled={!nickname || !title || content.length < 3}
             />
           </>
         )}
