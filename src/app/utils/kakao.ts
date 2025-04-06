@@ -1,6 +1,6 @@
 // src/app/utils/kakao.ts
 
-import { KAKAO_CHANNEL_ID, KAKAO_JS_APP_KEY } from "@/app/config/constants";
+import { KAKAO_CHANNEL_ID, KAKAO_JS_APP_KEY } from "@config/constants";
 
 declare global {
   interface Window {

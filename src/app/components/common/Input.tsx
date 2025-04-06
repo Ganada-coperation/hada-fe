@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { gowunBatang } from "@/app/styles/fonts";
+import { gowunBatang } from "@styles/fonts";
 
 interface InputProps {
   type?: string;

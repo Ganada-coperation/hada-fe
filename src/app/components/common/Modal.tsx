@@ -1,7 +1,7 @@
+"use client";
 
-
-import { ReactNode } from "react";
-import styled from "styled-components";
+import { ReactNode, useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
 import { IoClose } from "react-icons/io5";
 
 interface ModalProps {
@@ -11,25 +11,67 @@ interface ModalProps {
   showCloseIcon?: boolean;
 }
 
-export default function Modal({ onClose, title, children, showCloseIcon = true }: ModalProps) {
+export default function Modal({
+  onClose,
+  title,
+  children,
+  showCloseIcon = true,
+}: ModalProps) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // fade out 시간과 맞춤
+  };
+
+  // 💡 모달 열릴 때 body 스크롤 잠금
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
-    <ModalOverlay>
-      <ModalContent>
+    <ModalOverlay $isClosing={isClosing} onClick={handleClose}>
+      <ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
         {showCloseIcon && (
-          <CloseIcon onClick={onClose}>
+          <CloseIcon onClick={handleClose}>
             <IoClose size={24} />
           </CloseIcon>
         )}
-
         {title && <ModalTitle>{title}</ModalTitle>}
-
         {children}
       </ModalContent>
     </ModalOverlay>
   );
 }
 
-const ModalOverlay = styled.div`
+// ✅ 애니메이션 추가
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
+
+const slideIn = keyframes`
+  from { transform: translateY(-10px); }
+  to { transform: translateY(0); }
+`;
+
+const slideOut = keyframes`
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+`;
+
+// ✅ 스타일 개선 + 애니메이션 적용
+const ModalOverlay = styled.div<{ $isClosing: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -40,9 +82,10 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: ${({ $isClosing }) => ($isClosing ? fadeOut : fadeIn)} 0.3s ease forwards;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ $isClosing: boolean }>`
   background: ${({ theme }) => theme.colors.cardBackground};
   padding: 24px;
   border-radius: 10px;
@@ -51,6 +94,7 @@ const ModalContent = styled.div`
   max-width: 400px;
   width: 90%;
   position: relative;
+  animation: ${({ $isClosing }) => ($isClosing ? slideOut : slideIn)} 0.3s ease forwards;
 `;
 
 const CloseIcon = styled.button`

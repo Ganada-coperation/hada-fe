@@ -3,7 +3,7 @@
 "use client";
 
 import styled from "styled-components";
-import { addKakaoChannel } from "@/app/utils/kakao";
+import { addKakaoChannel } from "@utils/kakao";
 
 export default function FloatingKakaoButton() {
   const handleChannelButtonClick = () => {

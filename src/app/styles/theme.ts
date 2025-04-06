@@ -1,7 +1,7 @@
 
 const theme = {
   colors: {
-    primary: "rgba(25, 75, 126, 0.55)",
+    primary: "#194B7E",
     secondary: "#1A1A1A",
     background: "#F5F5F5",
     cardBackground: "#FFFFFF",
