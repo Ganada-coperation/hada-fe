@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 import styled from "styled-components";
 
 import WriteEditor from "@features/WriteEditor";
@@ -29,46 +28,52 @@ export default function WritePage() {
   const [showWriteEditor, setShowWriteEditor] = useState(false);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
-  // ✅ 닉네임 중복 체크
-  useEffect(() => {
-    if (!nickname) {
-      setNicknameMessage(null);
-      return;
-    }
+ // ✅ 닉네임 중복 체크
+useEffect(() => {
+  if (!nickname) {
+    setNicknameMessage(null);
+    return;
+  }
 
-    checkNickname(nickname)
-      .then(({ available }) => {
-        setNicknameMessage(available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
-      })
-      .catch(() => setNicknameMessage("오류가 발생했습니다."));
-  }, [nickname]);
+  checkNickname(nickname)
+    .then((response) => {
+      const available = response?.available ?? true;
+      setNicknameMessage(available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
+    })
+    .catch(() => setNicknameMessage("오류가 발생했습니다."));
+}, [nickname]);
 
-  // ✅ 최종 제출 흐름
+  
+
   const handleCompleteFlow = async (email: string, mood: string) => {
     try {
       await subscribeNewsletter(email);
-      await savePost(nickname, title, content, email, mood);
-      await sendPostEmail(email, formatPostContent(title, content));
-
+      const savedPost = await savePost(nickname, title, content, email, mood);
+  
+  
+      alert("당신의 글을 이메일로 보내드렸어요!");
+  
+    
+      sendPostEmail(email, savedPost.postId).catch((error) => {
+        console.error("메일 발송 실패:", error);
+        alert("메일 전송 중 오류가 발생했습니다.");
+      });
+  
       window.dataLayer?.push({
         event: "post_saved",
         mood,
         eventCategory: "post",
         eventLabel: "write_complete",
       });
-
-      toast.success("당신의 글을 이메일로 보내드렸어요!", {
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
-
+  
       setIsCompleteModalOpen(false);
     } catch (error) {
       console.error("저장 또는 메일 발송 실패:", error);
-      toast.error("저장 또는 메일 전송 중 오류가 발생했습니다.");
+      alert("저장 또는 메일 전송 중 오류가 발생했습니다.");
     }
   };
-
+  
+  
   // ✅ 이메일 본문 포맷
   const formatPostContent = (title: string, content: string) =>
     `제목: ${title}\n\n내용:\n${content}`;
