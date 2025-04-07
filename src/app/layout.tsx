@@ -13,6 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <head>
+        {/* ✅ GTM 스크립트 */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 
+// ✅ 스타일 컴포넌트
 const Wrapper = styled.div`
   position: relative;
   display: flex;
