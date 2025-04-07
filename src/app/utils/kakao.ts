@@ -4,9 +4,17 @@ import { KAKAO_CHANNEL_ID, KAKAO_JS_APP_KEY } from "@config/constants";
 
 declare global {
   interface Window {
-    Kakao: any;
+    Kakao: {
+      init: (key: string) => void;
+      isInitialized: () => boolean;
+      Channel: {
+        addChannel: (options: { channelPublicId: string }) => void;
+        chat: (options: { channelPublicId: string }) => void;
+      };
+    };
   }
 }
+
 
 export const loadKakaoSdk = () => {
   return new Promise<void>((resolve, reject) => {
