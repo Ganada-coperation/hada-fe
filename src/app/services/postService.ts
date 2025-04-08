@@ -8,7 +8,7 @@ export async function savePost(
   email: string,
   mood: string
 ) {
-  return apiRequest("/posts", {
+  const response = await apiRequest("/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -19,6 +19,8 @@ export async function savePost(
       mood,
     }),
   });
+
+  return response; // ✅ 반드시 응답 반환!
 }
 
 // ✅ 글 목록 조회 API 호출

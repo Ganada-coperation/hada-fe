@@ -45,18 +45,22 @@ useEffect(() => {
 
   
 
- // ✅ handleCompleteFlow 함수 그대로 두고 formatPostContent 삭제
 const handleCompleteFlow = async (email: string, mood: string) => {
   try {
     await subscribeNewsletter(email);
-    const savedPost = await savePost(nickname, title, content, email, mood);
+
+    const savedPostResponse = await savePost(nickname, title, content, email, mood);
+console.log('✅ 저장된 Post Response:', savedPostResponse);
+
+const postId = savedPostResponse?.result?.postId;
+
+if (!postId) {
+  throw new Error("글 저장에 실패했습니다. postId 없음");
+}
+
+    await sendPostEmail(email, postId);
 
     alert("당신의 글을 이메일로 보내드렸어요!");
-
-    sendPostEmail(email, savedPost.postId).catch((error) => {
-      console.error("메일 발송 실패:", error);
-      alert("메일 전송 중 오류가 발생했습니다.");
-    });
 
     window.dataLayer?.push({
       event: "post_saved",
@@ -72,7 +76,12 @@ const handleCompleteFlow = async (email: string, mood: string) => {
   }
 };
 
+
   
+  // ✅ 이메일 본문 포맷
+  const formatPostContent = (title: string, content: string) =>
+    `제목: ${title}\n\n내용:\n${content}`;
+
   // ✅ 단계별 화면 렌더링
   const renderStep = () => {
     if (!showTitleInput) {
