@@ -77,10 +77,7 @@ if (!postId) {
 };
 
 
-  
-  // ✅ 이메일 본문 포맷
-  const formatPostContent = (title: string, content: string) =>
-    `제목: ${title}\n\n내용:\n${content}`;
+
 
   // ✅ 단계별 화면 렌더링
   const renderStep = () => {
