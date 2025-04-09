@@ -13,6 +13,7 @@ import { subscribeNewsletter } from "@services/newsletterService";
 import { loadKakaoSdk } from "@utils/kakao";
 import { darken } from "polished";
 
+
 export default function HomePage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
