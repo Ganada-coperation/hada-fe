@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
+
 import WriteEditor from "@features/WriteEditor";
 import Input from "@components/common/Input";
 import HomeButton from "@components/common/HomeButton";
 import BackButton from "@components/common/BackButton";
 import CompleteModal from "@modals/@completeModal/CompleteModal";
 import Button from "@components/common/Button";
+import LoadingSpinner from "@components/common/LoadingSpinner";
 import { FeedbackMessage } from "@components/common/FeedbackMessage";
 
 import { checkNickname } from "@services/userService";
@@ -20,7 +22,8 @@ import { gowunBatang } from "@styles/fonts";
 import { fadeSlideIn } from "@styles/animations";
 
 export default function WritePage() {
-  const router = useRouter(); 
+  const router = useRouter();
+
   const [nickname, setNickname] = useState("");
   const [nicknameMessage, setNicknameMessage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -28,62 +31,56 @@ export default function WritePage() {
   const [showTitleInput, setShowTitleInput] = useState(false);
   const [showWriteEditor, setShowWriteEditor] = useState(false);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // ✅ 로딩 상태 추가
 
- // ✅ 닉네임 중복 체크
-useEffect(() => {
-  if (!nickname) {
-    setNicknameMessage(null);
-    return;
-  }
+  useEffect(() => {
+    if (!nickname) {
+      setNicknameMessage(null);
+      return;
+    }
 
-  checkNickname(nickname)
-    .then((response) => {
-      const available = response?.available ?? true;
-      setNicknameMessage(available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
-    })
-    .catch(() => setNicknameMessage("오류가 발생했습니다."));
-}, [nickname]);
+    checkNickname(nickname)
+      .then((response) => {
+        const available = response?.available ?? true;
+        setNicknameMessage(available ? "멋진 필명이네요!" : "이미 사용 중인 필명입니다");
+      })
+      .catch(() => setNicknameMessage("오류가 발생했습니다."));
+  }, [nickname]);
 
-  
+  const handleCompleteFlow = async (email: string, mood: string) => {
+    try {
+      setIsLoading(true); // ✅ 로딩 시작
 
-const handleCompleteFlow = async (email: string, mood: string) => {
-  try {
-    await subscribeNewsletter(email);
+      await subscribeNewsletter(email);
 
-    const savedPostResponse = await savePost(nickname, title, content, email, mood);
-console.log('✅ 저장된 Post Response:', savedPostResponse);
+      const savedPostResponse = await savePost(nickname, title, content, email, mood);
+      const postId = savedPostResponse?.result?.postId;
 
-const postId = savedPostResponse?.result?.postId;
+      if (!postId) {
+        throw new Error("글 저장에 실패했습니다. postId 없음");
+      }
 
-if (!postId) {
-  throw new Error("글 저장에 실패했습니다. postId 없음");
-}
+      await sendPostEmail(email, postId);
 
-    await sendPostEmail(email, postId);
+      alert("당신의 글을 이메일로 보내드렸어요!");
 
-    alert("당신의 글을 이메일로 보내드렸어요!");
+      window.dataLayer?.push({
+        event: "post_saved",
+        mood,
+        eventCategory: "post",
+        eventLabel: "write_complete",
+      });
 
-    window.dataLayer?.push({
-      event: "post_saved",
-      mood,
-      eventCategory: "post",
-      eventLabel: "write_complete",
-    });
+      setIsCompleteModalOpen(false);
+      router.push("/");
+    } catch (error) {
+      console.error("저장 또는 메일 발송 실패:", error);
+      alert("저장 또는 메일 전송 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false); // ✅ 로딩 종료
+    }
+  };
 
-    setIsCompleteModalOpen(false);
-
-    router.push("/");
-
-  } catch (error) {
-    console.error("저장 또는 메일 발송 실패:", error);
-    alert("저장 또는 메일 전송 중 오류가 발생했습니다.");
-  }
-};
-
-
-
-
-  // ✅ 단계별 화면 렌더링
   const renderStep = () => {
     if (!showTitleInput) {
       return (
@@ -138,9 +135,9 @@ if (!postId) {
 
   return (
     <PageWrapper>
+      {isLoading && <LoadingSpinner />} {/* ✅ 로딩 스피너 */}
       <PageContainer>
         <HomeButton />
-
         {(showTitleInput || showWriteEditor) && (
           <BackButton
             onClick={() => {
@@ -149,19 +146,15 @@ if (!postId) {
             }}
           />
         )}
-
         <Title>하다 | 나만의 이야기 작성</Title>
-
         {renderStep()}
-
-       {isCompleteModalOpen && (
-        <CompleteModal
+        {isCompleteModalOpen && (
+          <CompleteModal
             onConfirm={handleCompleteFlow}
             onClose={() => setIsCompleteModalOpen(false)}
             nickname={nickname}
-        />
-)}
-
+          />
+        )}
       </PageContainer>
     </PageWrapper>
   );
@@ -175,6 +168,7 @@ const PageWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: ${({ theme }) => theme.colors.background};
+  position: relative;
 `;
 
 const PageContainer = styled.div`
