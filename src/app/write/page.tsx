@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-
+import { useRouter } from "next/navigation";
 import WriteEditor from "@features/WriteEditor";
 import Input from "@components/common/Input";
 import HomeButton from "@components/common/HomeButton";
@@ -20,6 +20,7 @@ import { gowunBatang } from "@styles/fonts";
 import { fadeSlideIn } from "@styles/animations";
 
 export default function WritePage() {
+  const router = useRouter(); 
   const [nickname, setNickname] = useState("");
   const [nicknameMessage, setNicknameMessage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -70,6 +71,9 @@ if (!postId) {
     });
 
     setIsCompleteModalOpen(false);
+
+    router.push("/");
+    
   } catch (error) {
     console.error("저장 또는 메일 발송 실패:", error);
     alert("저장 또는 메일 전송 중 오류가 발생했습니다.");
