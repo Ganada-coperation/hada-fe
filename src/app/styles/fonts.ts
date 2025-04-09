@@ -5,12 +5,12 @@ import localFont from "next/font/local";
 export const gowunBatang = localFont({
   src: [
     {
-      path: "../../public/fonts/GowunBatang-Regular.ttf",
+      path: "../fonts/GowunBatang-Regular.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/GowunBatang-Bold.ttf",
+      path: "../fonts/GowunBatang-Bold.ttf",
       weight: "700",
       style: "normal",
     },
