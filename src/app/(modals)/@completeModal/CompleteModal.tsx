@@ -12,11 +12,12 @@ import { rgba } from "polished";
 interface CompleteModalProps {
   onConfirm: (email: string, mood: string) => void;
   onClose: () => void;
+  nickname: string;
 }
 
 const MOOD_OPTIONS = ["😊 좋음", "😐 보통", "😔 우울", "💭 기타"];
 
-export default function CompleteModal({ onConfirm, onClose }: CompleteModalProps) {
+export default function CompleteModal({ onConfirm, onClose, nickname }: CompleteModalProps) {
   const [email, setEmail] = useState("");
   const [selectedMood, setSelectedMood] = useState("");
   const [error, setError] = useState("");
@@ -51,7 +52,7 @@ export default function CompleteModal({ onConfirm, onClose }: CompleteModalProps
         onChange={(e) => setEmail(e.target.value)}
       />
 
-      <MoodLabel>당신의 이야기에 담긴 감정은 무엇인가요?✍️</MoodLabel>
+   <MoodLabel>오늘 {nickname}님의 기분은 어떠신가요💐?</MoodLabel>
       <MoodOptions>
         {MOOD_OPTIONS.map((mood) => (
           <MoodOption
