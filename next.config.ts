@@ -2,14 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/write/prefill/:postId",
-        destination: "/write/prefill/[postId]",
-      },
-    ];
-  },
+  
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
