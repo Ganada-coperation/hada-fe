@@ -2,7 +2,17 @@
 
 declare global {
   interface Window {
-    Kakao: any;
+    Kakao: {
+      isInitialized: () => boolean;
+      init: (key: string) => void;
+      Link: {
+        sendDefault: (options: any) => void;
+      };
+      Channel: {
+        chat: (options: { channelPublicId?: string }) => void;
+        addChannel: (options: { channelPublicId?: string }) => void;
+      };
+    };
   }
 }
 
@@ -14,7 +24,7 @@ export const loadKakaoSdk = () => {
     }
 
     const script = document.createElement("script");
-    script.src = "https://developers.kakao.com/sdk/js/kakao.js"; // ✅ 공식 SDK
+    script.src = "https://developers.kakao.com/sdk/js/kakao.js";
     script.async = true;
     script.onload = () => {
       const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
@@ -27,7 +37,6 @@ export const loadKakaoSdk = () => {
       }
     };
     script.onerror = reject;
-
     document.head.appendChild(script);
   });
 };
