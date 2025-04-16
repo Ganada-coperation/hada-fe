@@ -3,14 +3,22 @@ import { gowunBatang } from "@styles/fonts";
 
 interface InputProps {
   type?: string;
-  placeholder: string;
-  value: string;
+  placeholder?: string;
+  value: string | undefined;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Input({ type = "text", placeholder, value, onChange }: InputProps) {
-  return <StyledInput type={type} placeholder={placeholder} value={value} onChange={onChange} />;
+  return (
+    <StyledInput
+      type={type}
+      placeholder={placeholder}
+      value={value ?? ""} // ✅ undefined → 빈 문자열 fallback
+      onChange={onChange}
+    />
+  );
 }
+
 
 // ✅ 공통 입력 필드 스타일
 const StyledInput = styled.input`
