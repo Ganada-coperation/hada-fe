@@ -30,22 +30,31 @@ export default function PrefillWritePage() {
 
   useEffect(() => {
     if (!postId) return;
-
+  
     const loadData = async () => {
       try {
         const res = await fetchPostById(postId as string);
-        setNickname(res.nickname || "");
-        setTitle(res.title || "");
-        setContent(res.content || "");
+  
+        if (!res || !res.nickname) {
+          toast.error("존재하지 않는 글입니다.");
+          router.push("/404"); // 혹은 원하는 fallback 경로
+          return;
+        }
+  
+        setNickname(res.nickname);
+        setTitle(res.title);
+        setContent(res.content);
       } catch {
         toast.error("글 데이터를 불러오는 데 실패했어요.");
+        router.push("/404");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     loadData();
   }, [postId]);
+  
 
   const handleSubmit = async (email: string, mood: string) => {
     try {
