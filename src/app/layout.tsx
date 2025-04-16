@@ -1,7 +1,5 @@
-// src/app/layout.tsx
 "use client";
 
-import { useEffect } from "react";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "@styles/globalStyles";
 import theme from "@styles/theme";
@@ -11,22 +9,6 @@ import FloatingKakaoButton from "@components/common/FloatingKakaoButton";
 import Script from "next/script";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    const kakaoScript = document.createElement("script");
-    kakaoScript.src = "https://developers.kakao.com/sdk/js/kakao.js";
-    kakaoScript.async = true;
-    kakaoScript.onload = () => {
-      if (!window.Kakao?.isInitialized()) {
-        const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-        if (kakaoKey) {
-          window.Kakao.init(kakaoKey);
-          console.log("✅ Kakao SDK Initialized");
-        }
-      }
-    };
-    document.head.appendChild(kakaoScript);
-  }, []);
-
   return (
     <html lang="ko">
       <head>
@@ -45,6 +27,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             })(window,document,'script','dataLayer','GTM-5X95W8N8');
           `}
         </Script>
+
+        {/* ✅ Kakao SDK 스크립트 추가 */}
+        <Script
+          src="https://developers.kakao.com/sdk/js/kakao.js"
+          strategy="beforeInteractive"
+          onLoad={() => {
+            if (!window.Kakao?.isInitialized()) {
+              window.Kakao.init("f701c1be96a5432920b76ec27e7c656a"); // 👉 본인의 JS Key 사용
+              console.log("✅ Kakao SDK Initialized");
+            }
+          }}
+          onError={() => {
+            console.error("❌ Kakao SDK 로딩 실패");
+          }}
+        />
       </head>
 
       <body className={gowunBatang.className}>
@@ -68,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-
 
 const Wrapper = styled.div`
   position: relative;
