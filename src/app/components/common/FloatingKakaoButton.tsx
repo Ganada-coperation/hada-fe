@@ -6,10 +6,15 @@ import { useEffect } from "react";
 
 export default function FloatingKakaoButton() {
   useEffect(() => {
-    loadKakaoSdk().catch(() => {
-      console.error("카카오 SDK 로딩 실패");
-    });
+    loadKakaoSdk()
+      .then(() => {
+        console.log("✅ Kakao SDK ready");
+      })
+      .catch(() => {
+        console.error("❌ Kakao SDK 로딩 실패");
+      });
   }, []);
+  
 
   const handleChannelButtonClick = () => {
     window.dataLayer?.push({ event: "cta_clicked", label: "kakao_channel" });

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import styled from "styled-components";
 import Button from "@components/common/Button";
 import toast from "react-hot-toast";
+import { loadKakaoSdk } from "@utils/kakao"; // ✅ 공통 Kakao SDK 로더 사용
 
 export default function CompletePageInner() {
   const router = useRouter();
@@ -14,15 +15,12 @@ export default function CompletePageInner() {
   const [isKakaoReady, setIsKakaoReady] = useState(false);
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://developers.kakao.com/sdk/js/kakao.js";
-    script.async = true;
-    script.onload = () => {
-      const kakaoKey = "f701c1be96a5432920b76ec27e7c656a";
-      window.Kakao.init(kakaoKey);
-      setIsKakaoReady(window.Kakao.isInitialized());
-    };
-    document.head.appendChild(script);
+    loadKakaoSdk()
+      .then(() => setIsKakaoReady(true))
+      .catch(() => {
+        console.error("카카오 SDK 로딩 실패");
+        toast.error("카카오 SDK를 불러오는 데 실패했습니다.");
+      });
   }, []);
 
   const handleShare = () => {
@@ -64,13 +62,18 @@ export default function CompletePageInner() {
       <Container>
         <Title>🎉 글 작성 완료!</Title>
         <Description>작성하신 글이 성공적으로 저장되었습니다.</Description>
-        <Button text="💌 친구에게 공유하기" onClick={handleShare} disabled={!isKakaoReady} />
+        <Button
+          text="💌 친구에게 공유하기"
+          onClick={handleShare}
+          disabled={!isKakaoReady}
+        />
         <Button text="홈으로 돌아가기" onClick={() => router.push("/")} />
       </Container>
     </PageWrapper>
   );
 }
 
+// 스타일 컴포넌트
 const PageWrapper = styled.div`
   display: flex;
   justify-content: center;

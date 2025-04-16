@@ -38,25 +38,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           ></iframe>
         </noscript>
 
-        {/* ✅ Kakao SDK는 반드시 body 내부에서 로드 */}
-        <Script
-          src="https://developers.kakao.com/sdk/js/kakao.js"
-          strategy="beforeInteractive"
-          onLoad={() => {
-            try {
-              if (!window.Kakao?.isInitialized()) {
-                window.Kakao.init("f701c1be96a5432920b76ec27e7c656a");
-                console.log("✅ Kakao SDK Initialized");
-              }
-            } catch (e) {
-              console.error("❌ Kakao SDK 초기화 실패", e);
-            }
-          }}
-          onError={() => {
-            console.error("❌ Kakao SDK 로딩 실패");
-          }}
-        />
-
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           <Wrapper>
