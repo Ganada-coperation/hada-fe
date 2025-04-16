@@ -1,13 +1,11 @@
-// src/app/utils/kakao.ts
-
 declare global {
   interface Window {
     Kakao: {
       isInitialized: () => boolean;
       init: (key: string) => void;
       Link: {
-        sendDefault: (options: unknown) => void;
-      };      
+        sendDefault: (options: KakaoShareOptions) => void;
+      };
       Channel: {
         chat: (options: { channelPublicId?: string }) => void;
         addChannel: (options: { channelPublicId?: string }) => void;
@@ -16,8 +14,29 @@ declare global {
   }
 }
 
-export const loadKakaoSdk = () => {
-  return new Promise<void>((resolve, reject) => {
+// ✅ 명시적인 타입 정의
+interface KakaoShareOptions {
+  objectType: "feed";
+  content: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    link: {
+      mobileWebUrl: string;
+      webUrl: string;
+    };
+  };
+  buttons?: {
+    title: string;
+    link: {
+      mobileWebUrl: string;
+      webUrl: string;
+    };
+  }[];
+}
+
+export const loadKakaoSdk = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
     if (window.Kakao && window.Kakao.isInitialized()) {
       resolve();
       return;
@@ -26,6 +45,7 @@ export const loadKakaoSdk = () => {
     const script = document.createElement("script");
     script.src = "https://developers.kakao.com/sdk/js/kakao.js";
     script.async = true;
+
     script.onload = () => {
       const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
       if (jsKey && window.Kakao && !window.Kakao.isInitialized()) {
@@ -36,7 +56,8 @@ export const loadKakaoSdk = () => {
         reject("Kakao SDK init failed");
       }
     };
-    script.onerror = reject;
+
+    script.onerror = () => reject("Kakao SDK script load error");
     document.head.appendChild(script);
   });
 };
@@ -77,9 +98,7 @@ export const chatWithKakao = () => {
   }
 
   const channelId = process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID;
-  window.Kakao.Channel.chat({
-    channelPublicId: channelId,
-  });
+  window.Kakao.Channel.chat({ channelPublicId: channelId });
 };
 
 export const addKakaoChannel = () => {
@@ -89,7 +108,5 @@ export const addKakaoChannel = () => {
   }
 
   const channelId = process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID;
-  window.Kakao.Channel.addChannel({
-    channelPublicId: channelId,
-  });
+  window.Kakao.Channel.addChannel({ channelPublicId: channelId });
 };
