@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Button from "@components/common/Button";
-import { loadKakaoSdk, shareKakao } from "@utils/kakao";
+import { loadKakaoSdk } from "@utils/kakao";
 
 interface KakaoShareButtonProps {
   nickname: string;
@@ -12,7 +12,12 @@ interface KakaoShareButtonProps {
   postId: string;
 }
 
-export default function KakaoShareButton({ nickname, title, content, postId }: KakaoShareButtonProps) {
+export default function KakaoShareButton({
+  nickname,
+  title,
+  content,
+  postId,
+}: KakaoShareButtonProps) {
   const [isKakaoReady, setIsKakaoReady] = useState(false);
 
   useEffect(() => {
@@ -29,13 +34,45 @@ export default function KakaoShareButton({ nickname, title, content, postId }: K
       return;
     }
 
-    const description = content.length > 100 ? `${content.slice(0, 100)}...` : content;
+    const description =
+      content.length > 100 ? `${content.slice(0, 100)}...` : content;
 
-    shareKakao(postId, {
-      title: `${nickname}님의 이야기: ${title}`,
-      description,
+    const baseUrl =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3001"
+        : "https://hada.ganadacorp.com";
+
+    const postLink = `${baseUrl}/write/prefill/${postId}`;
+
+    window.Kakao.Link.sendDefault({
+      objectType: "feed",
+      content: {
+        title: `${nickname}님의 이야기: ${title}`,
+        description,
+        imageUrl:
+          "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
+        link: {
+          mobileWebUrl: postLink,
+          webUrl: postLink,
+        },
+      },
+      buttons: [
+        {
+          title: "지금 이야기 확인하기",
+          link: {
+            mobileWebUrl: postLink,
+            webUrl: postLink,
+          },
+        },
+      ],
     });
   };
 
-  return <Button text="💌 친구에게 공유하기" onClick={handleShare} disabled={!isKakaoReady} />;
+  return (
+    <Button
+      text="💌 친구에게 공유하기"
+      onClick={handleShare}
+      disabled={!isKakaoReady}
+    />
+  );
 }
