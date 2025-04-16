@@ -16,8 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta property="og:description" content="지금 바로 당신만의 이야기를 완성해보세요." />
         <meta property="og:image" content="https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true" />
         <meta property="og:url" content="https://hada.ganadacorp.com" />
+      </head>
 
-        {/* ✅ GTM 스크립트 */}
+      <body className={gowunBatang.className}>
+        {/* ✅ GTM */}
         <Script id="gtm-script">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -27,24 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             })(window,document,'script','dataLayer','GTM-5X95W8N8');
           `}
         </Script>
-
-        {/* ✅ Kakao SDK 스크립트 추가 */}
-        <Script
-          src="https://developers.kakao.com/sdk/js/kakao.js"
-          strategy="beforeInteractive"
-          onLoad={() => {
-            if (!window.Kakao?.isInitialized()) {
-              window.Kakao.init("f701c1be96a5432920b76ec27e7c656a"); // 👉 본인의 JS Key 사용
-              console.log("✅ Kakao SDK Initialized");
-            }
-          }}
-          onError={() => {
-            console.error("❌ Kakao SDK 로딩 실패");
-          }}
-        />
-      </head>
-
-      <body className={gowunBatang.className}>
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-5X95W8N8"
@@ -53,6 +37,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
+
+        {/* ✅ Kakao SDK는 반드시 body 내부에서 로드 */}
+        <Script
+          src="https://developers.kakao.com/sdk/js/kakao.js"
+          strategy="beforeInteractive"
+          onLoad={() => {
+            try {
+              if (!window.Kakao?.isInitialized()) {
+                window.Kakao.init("f701c1be96a5432920b76ec27e7c656a");
+                console.log("✅ Kakao SDK Initialized");
+              }
+            } catch (e) {
+              console.error("❌ Kakao SDK 초기화 실패", e);
+            }
+          }}
+          onError={() => {
+            console.error("❌ Kakao SDK 로딩 실패");
+          }}
+        />
 
         <ThemeProvider theme={theme}>
           <GlobalStyle />
