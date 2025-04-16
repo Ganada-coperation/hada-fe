@@ -1,63 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useRouter } from "next/navigation";
-
+import { useRouter, useSearchParams } from "next/navigation";
 import HomeButton from "@components/common/HomeButton";
 import BackButton from "@components/common/BackButton";
-import CompleteModal from "@modals/@completeModal/CompleteModal";
 import LoadingSpinner from "@components/common/LoadingSpinner";
-
+import ProgressIndicator from "./components/ProgressIndicator";
+import CompleteModal from "@modals/@completeModal/CompleteModal";
 import NicknameStep from "./_steps/NicknameStep";
 import TitleStep from "./_steps/TitleStep";
 import ContentStep from "./_steps/ContentStep";
-
 import { savePost } from "@services/postService";
 import { subscribeNewsletter } from "@services/newsletterService";
 import { sendPostEmail } from "@services/postEmailService";
-
+import { trackEvent } from "@utils/analytics";
+import toast from "react-hot-toast";
 import { gowunBatang } from "@styles/fonts";
 
 export default function WritePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [nickname, setNickname] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const getParam = (key: string) => decodeURIComponent(searchParams.get(key) || "");
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [nickname, setNickname] = useState(getParam("nickname"));
+  const [title, setTitle] = useState(getParam("title"));
+  const [content, setContent] = useState(getParam("content"));
+
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
-  const handleCompleteFlow = async (email: string, mood: string) => {
+  useEffect(() => {
+    trackEvent("page_view_write");
+  }, []);
+
+  useEffect(() => {
+    trackEvent("write_step_change", { step: currentStep });
+  }, [currentStep]);
+
+  const handleCompleteFlow = () => {
+    setIsCompleteModalOpen(true);
+  };
+
+  const handleSubmitPost = async (email: string, mood: string) => {
     try {
       setIsLoading(true);
 
       await subscribeNewsletter(email);
-      const savedPostResponse = await savePost(nickname, title, content, email, mood);
-
-      const postId = savedPostResponse?.result?.postId;
-      if (!postId) throw new Error("글 저장에 실패했습니다. postId 없음");
+      const response = await savePost(nickname, title, content, email, mood);
+      const postId = response?.result?.postId;
+      if (!postId) throw new Error("글 저장 실패");
 
       await sendPostEmail(email, postId);
 
-      alert("당신의 글을 이메일로 보내드렸어요!");
+      trackEvent("post_saved", { mood });
+      toast.success("🎉 당신의 글이 저장되었습니다! 이메일을 확인해보세요.");
 
-      window.dataLayer?.push({
-        event: "post_saved",
-        mood,
-        eventCategory: "post",
-        eventLabel: "write_complete",
-      });
-
-      setIsCompleteModalOpen(false);
-      router.push("/");
+      setTimeout(() => router.push(`/write/complete?postId=${postId}`), 1500);
     } catch (error) {
-      console.error("저장 또는 메일 발송 실패:", error);
-      alert("저장 또는 메일 전송 중 오류가 발생했습니다.");
+      console.error(error);
+      toast.error("오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       setIsLoading(false);
+      setIsCompleteModalOpen(false);
     }
   };
 
@@ -68,16 +75,14 @@ export default function WritePage() {
       case 2:
         return <TitleStep title={title} setTitle={setTitle} onNext={() => setCurrentStep(3)} />;
       case 3:
-        return <ContentStep content={content} setContent={setContent} onNext={() => setIsCompleteModalOpen(true)} />;
+        return <ContentStep content={content} setContent={setContent} onNext={handleCompleteFlow} />;
       default:
         return null;
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 1) setCurrentStep((currentStep - 1) as 1 | 2 | 3);
   };
 
   return (
@@ -86,16 +91,17 @@ export default function WritePage() {
       <PageContainer>
         <HomeButton />
         {currentStep > 1 && <BackButton onClick={handleBack} />}
-        <Title>하다 | 나만의 이야기 작성</Title>
+        <ProgressIndicator currentStep={currentStep} />
         {renderStep()}
-        {isCompleteModalOpen && (
-          <CompleteModal
-            onConfirm={handleCompleteFlow}
-            onClose={() => setIsCompleteModalOpen(false)}
-            nickname={nickname}
-          />
-        )}
       </PageContainer>
+
+      {isCompleteModalOpen && (
+        <CompleteModal
+          onClose={() => setIsCompleteModalOpen(false)}
+          onConfirm={handleSubmitPost}
+          nickname={nickname}
+        />
+      )}
     </PageWrapper>
   );
 }
@@ -124,12 +130,4 @@ const PageContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.cardBackground};
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: 16px;
 `;
