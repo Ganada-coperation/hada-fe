@@ -1,5 +1,7 @@
+// src/app/layout.tsx
 "use client";
 
+import { useEffect } from "react";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "@styles/globalStyles";
 import theme from "@styles/theme";
@@ -9,6 +11,22 @@ import FloatingKakaoButton from "@components/common/FloatingKakaoButton";
 import Script from "next/script";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const kakaoScript = document.createElement("script");
+    kakaoScript.src = "https://developers.kakao.com/sdk/js/kakao.js";
+    kakaoScript.async = true;
+    kakaoScript.onload = () => {
+      if (!window.Kakao?.isInitialized()) {
+        const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+        if (kakaoKey) {
+          window.Kakao.init(kakaoKey);
+          console.log("✅ Kakao SDK Initialized");
+        }
+      }
+    };
+    document.head.appendChild(kakaoScript);
+  }, []);
+
   return (
     <html lang="ko">
       <head>
@@ -50,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
 
 const Wrapper = styled.div`
   position: relative;
