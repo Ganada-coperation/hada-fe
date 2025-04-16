@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Button from "@components/common/Button";
+import { loadKakaoSdk, shareKakao } from "@utils/kakao";
 
 interface KakaoShareButtonProps {
   nickname: string;
@@ -12,52 +13,29 @@ interface KakaoShareButtonProps {
 }
 
 export default function KakaoShareButton({ nickname, title, content, postId }: KakaoShareButtonProps) {
+  const [isKakaoReady, setIsKakaoReady] = useState(false);
+
   useEffect(() => {
-    if (!window.Kakao) {
-      const script = document.createElement("script");
-      script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js";
-      script.async = true;
-      script.onload = () => {
-        const kakaoKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-        if (kakaoKey) {
-          window.Kakao.init(kakaoKey);
-          console.log("✅ Kakao SDK Initialized:", window.Kakao.isInitialized());
-        } else {
-          console.error("Kakao JS Key is not defined");
-        }
-      };
-      document.head.appendChild(script);
-    }
+    loadKakaoSdk()
+      .then(() => setIsKakaoReady(true))
+      .catch(() => {
+        toast.error("카카오 SDK 로딩에 실패했습니다.");
+      });
   }, []);
 
   const handleShare = () => {
     if (!window.Kakao?.isInitialized()) {
-      toast.error("카카오 SDK 로딩 중입니다. 잠시 후 시도해주세요.");
+      toast.error("카카오 SDK가 아직 초기화되지 않았어요.");
       return;
     }
 
-    window.Kakao.Link.sendDefault({
-      objectType: "feed",
-      content: {
-        title: `${nickname}님의 이야기: ${title}`,
-        description: content.length > 100 ? content.slice(0, 100) + "..." : content,
-        imageUrl: "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
-        link: {
-          mobileWebUrl: `https://hada.ganadacorp.com/write/prefill/${postId}`,
-          webUrl: `https://hada.ganadacorp.com/write/prefill/${postId}`,
-        },
-      },
-      buttons: [
-        {
-          title: "지금 이야기 확인하기",
-          link: {
-            mobileWebUrl: `https://hada.ganadacorp.com/write/prefill/${postId}`,
-            webUrl: `https://hada.ganadacorp.com/write/prefill/${postId}`,
-          },
-        },
-      ],
+    const description = content.length > 100 ? `${content.slice(0, 100)}...` : content;
+
+    shareKakao(postId, {
+      title: `${nickname}님의 이야기: ${title}`,
+      description,
     });
   };
 
-  return <Button text="💌 친구에게 공유하기" onClick={handleShare} />;
+  return <Button text="💌 친구에게 공유하기" onClick={handleShare} disabled={!isKakaoReady} />;
 }

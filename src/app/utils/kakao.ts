@@ -62,34 +62,39 @@ export const loadKakaoSdk = (): Promise<void> => {
   });
 };
 
-export const shareKakao = () => {
+export const shareKakao = (postId: string, options?: { title?: string; description?: string }) => {
   if (!window.Kakao || !window.Kakao.isInitialized()) {
     console.error("Kakao SDK not initialized");
     return;
   }
 
+  const baseUrl = process.env.NODE_ENV === "development"
+    ? "http://localhost:3001"
+    : "https://hada.ganadacorp.com";
+
   window.Kakao.Link.sendDefault({
     objectType: "feed",
     content: {
-      title: "하다 ✍️ 당신의 이야기를 기록하세요",
-      description: "지금 당신의 이야기를 친구와 공유하세요.",
+      title: options?.title || "하다 ✍️ 당신의 이야기를 기록하세요",
+      description: options?.description || "지금 당신의 이야기를 친구와 공유하세요.",
       imageUrl: "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
       link: {
-        mobileWebUrl: "https://hada.ganadacorp.com",
-        webUrl: "https://hada.ganadacorp.com",
+        mobileWebUrl: `${baseUrl}/write/prefill/${postId}`,
+        webUrl: `${baseUrl}/write/prefill/${postId}`,
       },
     },
     buttons: [
       {
         title: "지금 확인하기",
         link: {
-          mobileWebUrl: "https://hada.ganadacorp.com",
-          webUrl: "https://hada.ganadacorp.com",
+          mobileWebUrl: `${baseUrl}/write/prefill/${postId}`,
+          webUrl: `${baseUrl}/write/prefill/${postId}`,
         },
       },
     ],
   });
 };
+
 
 export const chatWithKakao = () => {
   if (!window.Kakao || !window.Kakao.isInitialized()) {
