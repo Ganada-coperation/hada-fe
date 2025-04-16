@@ -25,11 +25,11 @@ export async function fetchPosts() {
 }
 
 
-// ✅ 글 상세 조회 API 호출 추가
+// ✅ 글 상세 조회 API 호출 수정
 export async function fetchPostById(postId: string) {
-  const response = await apiRequest(`/generated-content/${postId}`, {
+  const response = await apiRequest(`/posts/${postId}`, {
     method: "GET",
   });
-  return response.result;
+  return response; // 또는 response.result가 아니라 response 전체 반환
 }
 

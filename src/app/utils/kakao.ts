@@ -1,3 +1,5 @@
+// src/app/utils/kakao.ts
+
 declare global {
   interface Window {
     Kakao: {
@@ -14,7 +16,6 @@ declare global {
   }
 }
 
-// ✅ 명시적인 타입 정의
 interface KakaoShareOptions {
   objectType: "feed";
   content: {
@@ -72,6 +73,10 @@ export const shareKakao = (postId: string, options?: { title?: string; descripti
     ? "http://localhost:3001"
     : "https://hada.ganadacorp.com";
 
+  const shareUrl = `${baseUrl}/write/prefill/${postId}`;
+
+  console.log("공유 링크 확인 →", shareUrl); // ✅ 테스트용
+
   window.Kakao.Link.sendDefault({
     objectType: "feed",
     content: {
@@ -79,22 +84,21 @@ export const shareKakao = (postId: string, options?: { title?: string; descripti
       description: options?.description || "지금 당신의 이야기를 친구와 공유하세요.",
       imageUrl: "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
       link: {
-        mobileWebUrl: `${baseUrl}/write/prefill/${postId}`,
-        webUrl: `${baseUrl}/write/prefill/${postId}`,
+        mobileWebUrl: shareUrl,
+        webUrl: shareUrl,
       },
     },
     buttons: [
       {
         title: "지금 확인하기",
         link: {
-          mobileWebUrl: `${baseUrl}/write/prefill/${postId}`,
-          webUrl: `${baseUrl}/write/prefill/${postId}`,
+          mobileWebUrl: shareUrl,
+          webUrl: shareUrl,
         },
       },
     ],
   });
 };
-
 
 export const chatWithKakao = () => {
   if (!window.Kakao || !window.Kakao.isInitialized()) {
