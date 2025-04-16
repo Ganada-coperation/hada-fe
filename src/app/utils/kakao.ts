@@ -6,8 +6,8 @@ declare global {
       isInitialized: () => boolean;
       init: (key: string) => void;
       Link: {
-        sendDefault: (options: any) => void;
-      };
+        sendDefault: (options: unknown) => void;
+      };      
       Channel: {
         chat: (options: { channelPublicId?: string }) => void;
         addChannel: (options: { channelPublicId?: string }) => void;
