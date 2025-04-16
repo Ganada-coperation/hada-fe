@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
       "@utils": path.resolve(__dirname, "src/app/utils"),
       "@styles": path.resolve(__dirname, "src/app/styles"),
       "@config": path.resolve(__dirname, "src/app/config"),
-
     };
 
     return config;
