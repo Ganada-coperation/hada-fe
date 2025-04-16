@@ -1,6 +1,9 @@
 {
     "rewrites": [
-      { "source": "/write/prefill/:path*", "destination": "/write/prefill/:path*" }
+      {
+        "source": "/write/prefill/:postId",
+        "destination": "/write/prefill/[postId]"
+      }
     ]
   }
   
