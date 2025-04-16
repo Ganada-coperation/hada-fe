@@ -1,59 +1,86 @@
 // src/app/utils/kakao.ts
 
-import { KAKAO_CHANNEL_ID, KAKAO_JS_APP_KEY } from "@config/constants";
-
 declare global {
   interface Window {
-    Kakao: {
-      init: (key: string) => void;
-      isInitialized: () => boolean;
-      Channel: {
-        addChannel: (options: { channelPublicId: string }) => void;
-        chat: (options: { channelPublicId: string }) => void;
-      };
-    };
+    Kakao: any;
   }
 }
-
 
 export const loadKakaoSdk = () => {
   return new Promise<void>((resolve, reject) => {
     if (window.Kakao && window.Kakao.isInitialized()) {
-      return resolve();
+      resolve();
+      return;
     }
 
     const script = document.createElement("script");
-    script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js";
-    script.integrity =
-      "sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Hs90nka";
-    script.crossOrigin = "anonymous";
+    script.src = "https://developers.kakao.com/sdk/js/kakao.js"; // ✅ 공식 SDK
     script.async = true;
-
     script.onload = () => {
-      if (window.Kakao && !window.Kakao.isInitialized()) {
-        window.Kakao.init(KAKAO_JS_APP_KEY);
+      const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+      if (jsKey && window.Kakao && !window.Kakao.isInitialized()) {
+        window.Kakao.init(jsKey);
+        console.log("✅ Kakao SDK Initialized:", window.Kakao.isInitialized());
         resolve();
+      } else {
+        reject("Kakao SDK init failed");
       }
     };
-
     script.onerror = reject;
 
     document.head.appendChild(script);
   });
 };
 
-export const addKakaoChannel = () => {
-  if (window.Kakao) {
-    window.Kakao.Channel.addChannel({
-      channelPublicId: KAKAO_CHANNEL_ID,
-    });
+export const shareKakao = () => {
+  if (!window.Kakao || !window.Kakao.isInitialized()) {
+    console.error("Kakao SDK not initialized");
+    return;
   }
+
+  window.Kakao.Link.sendDefault({
+    objectType: "feed",
+    content: {
+      title: "하다 ✍️ 당신의 이야기를 기록하세요",
+      description: "지금 당신의 이야기를 친구와 공유하세요.",
+      imageUrl: "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
+      link: {
+        mobileWebUrl: "https://hada.ganadacorp.com",
+        webUrl: "https://hada.ganadacorp.com",
+      },
+    },
+    buttons: [
+      {
+        title: "지금 확인하기",
+        link: {
+          mobileWebUrl: "https://hada.ganadacorp.com",
+          webUrl: "https://hada.ganadacorp.com",
+        },
+      },
+    ],
+  });
 };
 
 export const chatWithKakao = () => {
-  if (window.Kakao) {
-    window.Kakao.Channel.chat({
-      channelPublicId: KAKAO_CHANNEL_ID,
-    });
+  if (!window.Kakao || !window.Kakao.isInitialized()) {
+    console.error("Kakao SDK not initialized");
+    return;
   }
+
+  const channelId = process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID;
+  window.Kakao.Channel.chat({
+    channelPublicId: channelId,
+  });
+};
+
+export const addKakaoChannel = () => {
+  if (!window.Kakao || !window.Kakao.isInitialized()) {
+    console.error("Kakao SDK not initialized");
+    return;
+  }
+
+  const channelId = process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID;
+  window.Kakao.Channel.addChannel({
+    channelPublicId: channelId,
+  });
 };
