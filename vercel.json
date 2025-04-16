@@ -1,0 +1,6 @@
+{
+    "rewrites": [
+      { "source": "/write/prefill/:path*", "destination": "/write/prefill/:path*" }
+    ]
+  }
+  

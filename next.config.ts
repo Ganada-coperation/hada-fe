@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
 
     return config;
   },
+
+  // ✅ rewrite 추가
+  async rewrites() {
+    return [
+      {
+        source: "/write/prefill/:postId",
+        destination: "/write/prefill/[postId]",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
