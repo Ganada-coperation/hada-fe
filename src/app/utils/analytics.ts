@@ -1,18 +1,11 @@
 declare global {
   interface Window {
-    gtag: (
-      command: string,
-      eventName: string,
-      params?: Record<string, string | number | boolean>
-    ) => void;
+    gtag?: (event: string, action: string, params: Record<string, unknown>) => void;
   }
 }
 
-export const logEvent = (
-  eventName: string,
-  params: Record<string, string | number | boolean>
-) => {
-  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+export const logEvent = (eventName: string, params: Record<string, unknown>) => {
+  if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", eventName, params);
   }
 };
