@@ -3,9 +3,9 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // ✅ useParams로 postId 받기
+import { useParams, useRouter } from "next/navigation";
 import styled from "styled-components";
-import { fetchPostById, savePost } from "@services/postService"; // ✅ 상세 조회 API import
+import { fetchPostById, savePost } from "@services/postService";
 import { sendPostEmail } from "@services/postEmailService";
 import { subscribeNewsletter } from "@services/newsletterService";
 import { gowunBatang } from "@styles/fonts";
@@ -19,7 +19,7 @@ import BackButton from "@components/common/BackButton";
 import toast from "react-hot-toast";
 
 export default function PrefillWritePage() {
-  const { postId } = useParams(); // ✅ 주소에서 postId 가져옴
+  const { postId } = useParams();
   const router = useRouter();
 
   const [nickname, setNickname] = useState("");
@@ -30,13 +30,14 @@ export default function PrefillWritePage() {
 
   useEffect(() => {
     if (!postId) return;
+
     const loadData = async () => {
       try {
         const res = await fetchPostById(postId as string);
         setNickname(res.nickname || "");
         setTitle(res.title || "");
         setContent(res.content || "");
-      } catch (e) {
+      } catch {
         toast.error("글 데이터를 불러오는 데 실패했어요.");
       } finally {
         setIsLoading(false);
@@ -58,7 +59,7 @@ export default function PrefillWritePage() {
 
       toast.success("이메일로 글을 전송했어요!");
       router.push(`/write/complete?postId=${newPostId}`);
-    } catch (err) {
+    } catch {
       toast.error("글 저장 중 오류가 발생했어요.");
     } finally {
       setIsLoading(false);
@@ -66,7 +67,7 @@ export default function PrefillWritePage() {
     }
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading || !postId) return <LoadingSpinner />;
 
   return (
     <PageWrapper>
