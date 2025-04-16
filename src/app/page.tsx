@@ -1,5 +1,3 @@
-// src/app/page.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,17 +5,14 @@ import styled, { keyframes } from "styled-components";
 import { gowunBatang } from "@styles/fonts";
 import { useRouter } from "next/navigation";
 import SubscribeModal from "@modals/@emailModal/subscribe";
-import ChatbotModal from "@modals/@chatbotModal/ChatbotModal";
 import Button from "@components/common/Button";
 import { subscribeNewsletter } from "@services/newsletterService";
-import { loadKakaoSdk } from "@utils/kakao";
+import { loadKakaoSdk, chatWithKakao } from "@utils/kakao";
 import { darken } from "polished";
-
 
 export default function HomePage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
 
   useEffect(() => {
     loadKakaoSdk().catch(() => {
@@ -37,18 +32,18 @@ export default function HomePage() {
     }
   };
 
-  const openChatbotModal = () => {
-    window.dataLayer?.push({ event: "cta_clicked", label: "kakao_chat_modal_open" });
-    setIsChatbotModalOpen(true);
-  };
-
   return (
     <Container>
       <Logo>HADA</Logo>
-      <Catchphrase>나의 이야기를 하다.</Catchphrase>
-
+      <Catchphrase>세상에 단 하나,<br/>당신만의 이야기를 완성해드립니다.</Catchphrase>
       <ButtonGroup>
-        <StyledButton text="🗨️ 챗봇 대화해보기" onClick={openChatbotModal} />
+        <StyledButton
+          text="🗨️ 챗봇 대화해보기"
+          onClick={() => {
+            window.dataLayer?.push({ event: "cta_clicked", label: "kakao_chat_link" });
+            chatWithKakao(); // ✅ 바로 채팅방으로 이동!
+          }}
+        />
         <StyledButton
           text="✍️ 글쓰러 가기"
           onClick={() => {
@@ -72,15 +67,12 @@ export default function HomePage() {
           onSubmit={handleSubscribe}
         />
       )}
-
-      {isChatbotModalOpen && (
-        <ChatbotModal onClose={() => setIsChatbotModalOpen(false)} />
-      )}
     </Container>
   );
 }
 
-// 스타일
+// ⭐ 스타일은 동일하게 유지 ⭐
+
 const fadeInMove = keyframes`
   from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
@@ -117,6 +109,7 @@ const Catchphrase = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
   margin-bottom: 32px;
   animation: ${fadeIn} 1.2s ease-in-out;
+  text-align: center;
 `;
 
 const ButtonGroup = styled.div`
@@ -143,10 +136,10 @@ const StyledButton = styled(Button)`
     color: white;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
     opacity: 0.9;
+  }
 
   &:active {
     transform: scale(0.97);
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   }
 `;
-

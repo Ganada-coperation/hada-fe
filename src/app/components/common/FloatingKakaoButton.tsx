@@ -1,17 +1,22 @@
-// src/app/components/common/FloatingKakaoButton.tsx
-
 "use client";
 
 import styled from "styled-components";
-import { addKakaoChannel } from "@utils/kakao";
+import { addKakaoChannel, loadKakaoSdk } from "@utils/kakao";
+import { useEffect } from "react";
 
 export default function FloatingKakaoButton() {
+  useEffect(() => {
+    loadKakaoSdk().catch(() => {
+      console.error("카카오 SDK 로딩 실패");
+    });
+  }, []);
+
   const handleChannelButtonClick = () => {
     window.dataLayer?.push({ event: "cta_clicked", label: "kakao_channel" });
     addKakaoChannel();
   };
 
-  return <Button onClick={handleChannelButtonClick}>❤️카카오톡 채널 추가</Button>;
+  return <Button onClick={handleChannelButtonClick}>❤️ 카카오톡 채널 추가</Button>;
 }
 
 const Button = styled.button`
@@ -19,7 +24,7 @@ const Button = styled.button`
   right: 24px;
   bottom: 24px;
   background-color: ${({ theme }) => theme.colors.floating};
-  color:  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   border: none;
   border-radius: 30px;
   padding: 14px 20px;

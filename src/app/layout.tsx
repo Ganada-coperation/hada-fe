@@ -1,5 +1,3 @@
-// src/app/layout.tsx
-
 "use client";
 
 import { ThemeProvider } from "styled-components";
@@ -14,16 +12,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <head>
+        <meta property="og:title" content="HADA - 세상에 단 하나, 당신의 이야기" />
+        <meta property="og:description" content="지금 바로 당신만의 이야기를 완성해보세요." />
+        <meta property="og:image" content="https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true" />
+        <meta property="og:url" content="https://hada.ganadacorp.com" />
+
         {/* ✅ GTM 스크립트 */}
         <Script id="gtm-script">
-  {`
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5X95W8N8');
-  `}
-</Script>
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-5X95W8N8');
+          `}
+        </Script>
       </head>
 
       <body className={gowunBatang.className}>
@@ -48,7 +51,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 
-// ✅ 스타일 컴포넌트
 const Wrapper = styled.div`
   position: relative;
   display: flex;
