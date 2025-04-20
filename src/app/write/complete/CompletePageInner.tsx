@@ -63,18 +63,33 @@ export default function CompletePageInner() {
     <PageWrapper>
       <Container>
         <Title>🎉 글 작성 완료!</Title>
-        <Description>작성하신 글이 성공적으로 저장되었습니다.</Description>
-        <Button text="💌 친구에게 공유하기" onClick={handleShare} disabled={!isKakaoReady} />
-        <Button text="홈으로 돌아가기" onClick={() => router.push("/")} />
+        <Description>
+          소중한 이야기가 잘 저장되었습니다. <br />
+          친구에게 공유해보시겠어요?
+        </Description>
+
+        <ButtonGroup>
+          <Button
+            text="💌 친구에게 공유하기"
+            onClick={handleShare}
+            disabled={!isKakaoReady}
+          />
+          <Button
+            text="🏠 홈으로 돌아가기"
+            onClick={() => router.push("/")}
+          />
+        </ButtonGroup>
       </Container>
     </PageWrapper>
   );
 }
 
+// 🎨 스타일 정의
 const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 32px 16px;
   width: 100vw;
   height: 100vh;
   background-color: ${({ theme }) => theme.colors.background};
@@ -82,18 +97,30 @@ const PageWrapper = styled.div`
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.cardBackground};
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px 28px;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
   text-align: center;
+  max-width: 420px;
+  width: 100%;
 `;
 
 const Title = styled.h1`
-  font-size: 28px;
-  margin-bottom: 12px;
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 const Description = styled.p`
-  font-size: 16px;
-  margin-bottom: 24px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  margin-bottom: 32px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;

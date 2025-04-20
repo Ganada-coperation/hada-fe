@@ -1,35 +1,43 @@
-// ✅ src/app/services/postService.ts
-
 import { apiRequest } from "./api";
+import { CreatePostRequest } from "../types/post";
 
-// ✅ 글 저장 API 호출 (이메일 + 기분 추가)
-export async function savePost(
-  nickname: string,
-  title: string,
-  content: string,
-  email: string,
-  mood: string
-) {
+// 글 저장
+export async function savePost(request: CreatePostRequest) {
+  const payload = request;
+  console.log("📦 savePost 요청 payload:", payload);
+
   const response = await apiRequest("/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nickname, title, content, email, mood }),
+    body: JSON.stringify(payload),
   });
 
-  return response; // ✅ 반드시 응답 반환!
+  console.log("📥 글 저장 응답:", response);
+
+  const postId = response?.result?.postId || response?.postId;
+  if (!postId) {
+    throw new Error("postId 응답이 없습니다.");
+  }
+
+  return { postId };
 }
 
-// ✅ 글 목록 조회 API 호출
-export async function fetchPosts() {
-  return apiRequest("/posts", { method: "GET" });
-}
+// 이메일 전송
+export async function sendPostMail(email: string, postId: string) {
+  const payload = { email, postId };
+  console.log("📧 이메일 전송 요청 payload:", payload);
 
-
-// ✅ 글 상세 조회 API 호출 수정
-export async function fetchPostById(postId: string) {
-  const response = await apiRequest(`/posts/${postId}`, {
-    method: "GET",
+  const response = await apiRequest("/posts/send-mail", {  // ✅ 경로 수정!
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
-  return response; // 또는 response.result가 아니라 response 전체 반환
-}
 
+  console.log("📥 이메일 전송 응답:", response);
+
+  if (!response?.message?.includes("성공")) {
+    throw new Error("메일 전송 실패");
+  }
+
+  return response;
+}

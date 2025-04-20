@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Button from "@components/common/Button";
-import { loadKakaoSdk } from "@utils/kakao";
+import { loadKakaoSdk, shareKakao } from "@utils/kakao";
 
 interface KakaoShareButtonProps {
   nickname: string;
@@ -22,57 +22,29 @@ export default function KakaoShareButton({
 
   useEffect(() => {
     loadKakaoSdk()
-      .then(() => setIsKakaoReady(true))
-      .catch(() => {
-        toast.error("카카오 SDK 로딩에 실패했습니다.");
+      .then(() => {
+        console.log("✅ Kakao SDK loaded and initialized.");
+        setIsKakaoReady(true);
+      })
+      .catch((err) => {
+        console.error("❌ Kakao SDK failed to load", err);
+        toast.error("카카오 공유 준비 중 오류가 발생했습니다.");
       });
   }, []);
 
   const handleShare = () => {
-    if (!window.Kakao?.isInitialized()) {
+    if (!isKakaoReady || !window.Kakao?.isInitialized()) {
       toast.error("카카오 SDK가 아직 초기화되지 않았어요.");
       return;
     }
 
-    const description =
-      content.length > 100 ? `${content.slice(0, 100)}...` : content;
+    const description = content.length > 100 ? `${content.slice(0, 100)}...` : content;
 
-    const baseUrl =
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3001"
-        : "https://hada.ganadacorp.com";
-
-    const postLink = `${baseUrl}/write/prefill/${postId}`;
-
-    window.Kakao.Link.sendDefault({
-      objectType: "feed",
-      content: {
-        title: `${nickname}님의 이야기: ${title}`,
-        description,
-        imageUrl:
-          "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
-        link: {
-          mobileWebUrl: postLink,
-          webUrl: postLink,
-        },
-      },
-      buttons: [
-        {
-          title: "지금 이야기 확인하기",
-          link: {
-            mobileWebUrl: postLink,
-            webUrl: postLink,
-          },
-        },
-      ],
+    shareKakao(postId, {
+      title: `${nickname}님의 이야기: ${title}`,
+      description,
     });
   };
 
-  return (
-    <Button
-      text="💌 친구에게 공유하기"
-      onClick={handleShare}
-      disabled={!isKakaoReady}
-    />
-  );
+  return <Button text="💌 친구에게 공유하기" onClick={handleShare} disabled={!isKakaoReady} />;
 }

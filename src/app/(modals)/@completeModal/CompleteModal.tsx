@@ -8,7 +8,6 @@ import { isValidEmail } from "@utils/validation";
 import styled from "styled-components";
 import { rgba } from "polished";
 
-
 interface CompleteModalProps {
   onConfirm: (email: string, mood: string) => void;
   onClose: () => void;
@@ -24,12 +23,12 @@ export default function CompleteModal({ onConfirm, onClose, nickname }: Complete
 
   const handleConfirm = () => {
     if (!isValidEmail(email)) {
-      setError("유효한 이메일을 입력해주세요.");
+      setError("이메일 형식을 확인해주세요 😊");
       return;
     }
 
     if (!selectedMood) {
-      setError("기분을 선택해주세요.");
+      setError("오늘의 기분을 선택해주세요.");
       return;
     }
 
@@ -41,18 +40,18 @@ export default function CompleteModal({ onConfirm, onClose, nickname }: Complete
     <Modal onClose={onClose}>
       <Title>작성 완료 🎉</Title>
       <Description>
-        입력하신 글이 곧 저장됩니다! <br />
-        이메일을 입력하면 당신의 글을 뉴스레터로 <br /> 받아보실 수 있어요 ✉️
+        <strong>{nickname}</strong>님의 이야기가 곧 저장돼요. <br />
+        이메일을 입력하시면 뉴스레터로 보내드릴게요 ✉️
       </Description>
 
       <Input
         type="email"
-        placeholder="이메일을 입력하세요"
+        placeholder="이메일 주소를 입력해 주세요"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
-   <MoodLabel>오늘 {nickname}님의 기분은 어떠신가요💐?</MoodLabel>
+      <MoodLabel>오늘 기분은 어떠세요?</MoodLabel>
       <MoodOptions>
         {MOOD_OPTIONS.map((mood) => (
           <MoodOption
@@ -67,51 +66,54 @@ export default function CompleteModal({ onConfirm, onClose, nickname }: Complete
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <Button
-        text="확인"
-        onClick={handleConfirm}
-        disabled={!email || !selectedMood}
-      />
+      <Button text="✉️ 이야기 저장하기" onClick={handleConfirm} disabled={!email || !selectedMood} />
     </Modal>
   );
 }
 
-// 스타일
+// 🎨 스타일 정의
 const Title = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
   text-align: center;
-  margin-bottom: 8px;
 `;
 
 const Description = styled.p`
+  font-size: 16px;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.textSecondary};
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 `;
 
 const MoodLabel = styled.p`
-  margin: 12px 0 8px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 20px 0 12px;
+  text-align: center;
 `;
 
 const MoodOptions = styled.div`
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 `;
 
 const MoodOption = styled.button<{ $selected: boolean }>`
-  padding: 6px 12px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  background-color: ${({ $selected, theme }) =>
-    $selected ?  rgba(theme.colors.primary, 0.55)  : "transparent"};
-  color: ${({ $selected, theme }) =>
-    $selected ? "#fff" : theme.colors.textPrimary};
-  border-radius: 6px;
+  padding: 9px 15px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 2px solid ${({ $selected, theme }) => $selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ $selected, theme }) => $selected ? rgba(theme.colors.primary, 0.6) : "#fff"};
+  color: ${({ $selected, theme }) => $selected ? "#fff" : theme.colors.textPrimary};
   cursor: pointer;
-  font-size: 14px;
+  transition: all 0.2s ease;
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.85;
   }
 `;
 
@@ -119,5 +121,5 @@ const ErrorMessage = styled.p`
   color: red;
   font-size: 14px;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 `;

@@ -1,4 +1,4 @@
-// src/app/utils/kakao.ts
+import { toast } from "react-hot-toast";
 
 declare global {
   interface Window {
@@ -36,29 +36,43 @@ interface KakaoShareOptions {
   }[];
 }
 
-export const loadKakaoSdk = (): Promise<void> => {
+export const loadKakaoSdk = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (window.Kakao && window.Kakao.isInitialized()) {
+      console.log("✅ Kakao SDK already initialized");
       resolve();
+      return;
+    }
+
+    const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
+    if (!jsKey) {
+      reject(new Error("카카오 SDK 키가 설정되지 않았습니다."));
       return;
     }
 
     const script = document.createElement("script");
     script.src = "https://developers.kakao.com/sdk/js/kakao.js";
     script.async = true;
-
     script.onload = () => {
-      const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-      if (jsKey && window.Kakao && !window.Kakao.isInitialized()) {
+      try {
+        if (!window.Kakao) {
+          throw new Error("카카오 SDK 로드 실패");
+        }
         window.Kakao.init(jsKey);
-        console.log("✅ Kakao SDK Initialized:", window.Kakao.isInitialized());
+        if (!window.Kakao.isInitialized()) {
+          throw new Error("카카오 SDK 초기화 실패");
+        }
+        console.log("✅ Kakao SDK initialized successfully");
         resolve();
-      } else {
-        reject("Kakao SDK init failed");
+      } catch (error) {
+        console.error("❌ Kakao SDK initialization error:", error);
+        reject(error);
       }
     };
-
-    script.onerror = () => reject("Kakao SDK script load error");
+    script.onerror = (error) => {
+      console.error("❌ Kakao SDK script load error:", error);
+      reject(new Error("카카오 SDK 스크립트 로드 실패"));
+    };
     document.head.appendChild(script);
   });
 };
@@ -73,9 +87,9 @@ export const shareKakao = (postId: string, options?: { title?: string; descripti
     ? "http://localhost:3001"
     : "https://hada.ganadacorp.com";
 
-  const shareUrl = `${baseUrl}/write/prefill/${postId}`;
+    const shareUrl = `${baseUrl}/write/prefill/${postId}`;
 
-  console.log("공유 링크 확인 →", shareUrl); // ✅ 테스트용
+  console.log("공유 링크 확인 →", shareUrl); // 테스트 로그
 
   window.Kakao.Link.sendDefault({
     objectType: "feed",
@@ -100,14 +114,21 @@ export const shareKakao = (postId: string, options?: { title?: string; descripti
   });
 };
 
-export const chatWithKakao = () => {
-  if (!window.Kakao || !window.Kakao.isInitialized()) {
-    console.error("Kakao SDK not initialized");
-    return;
-  }
+export const chatWithKakao = async () => {
+  try {
+    await loadKakaoSdk();
+    
+    if (!window.Kakao || !window.Kakao.isInitialized()) {
+      throw new Error("카카오 SDK 초기화 실패");
+    }
 
-  const channelId = process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID;
-  window.Kakao.Channel.chat({ channelPublicId: channelId });
+    window.Kakao.Channel.chat({
+      channelPublicId: process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID,
+    });
+  } catch (error) {
+    console.error("❌ 카카오톡 채널 연결 실패:", error);
+    toast.error("카카오톡 채널 연결에 실패했습니다. 잠시 후 다시 시도해주세요.");
+  }
 };
 
 export const addKakaoChannel = () => {

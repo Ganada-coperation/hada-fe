@@ -4,8 +4,6 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "@styles/globalStyles";
 import theme from "@styles/theme";
 import { gowunBatang } from "@styles/fonts";
-import styled from "styled-components";
-import FloatingKakaoButton from "@components/common/FloatingKakaoButton";
 import Script from "next/script";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -40,36 +38,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <ThemeProvider theme={theme}>
           <GlobalStyle />
-          <Wrapper>
-            <MainContent>{children}</MainContent>
-            <FloatingKakaoButton />
-          </Wrapper>
+          <Main>{children}</Main>
         </ThemeProvider>
       </body>
     </html>
   );
 }
 
-const Wrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: ${({ theme }) => theme.layout.maxWidth};
-  min-width: ${({ theme }) => theme.layout.minWidth};
-  height: ${({ theme }) => theme.layout.height};
-  padding: ${({ theme }) => theme.layout.wrapperPadding};
-  margin: 0 auto;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-`;
+import styled from "styled-components";
 
-const MainContent = styled.main`
+const Main = styled.main`
   width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+  min-height: 100vh;
+  background-color: ${({ theme }) => theme.colors.background};
 `;

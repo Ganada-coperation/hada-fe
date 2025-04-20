@@ -1,8 +1,10 @@
-import type { NextConfig } from "next";
-import path from "path";
+const path = require("path"); // ✅ path 모듈 선언
 
-const nextConfig: NextConfig = {
-  
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  compiler: {
+    styledComponents: true, // ✅ babel-plugin-styled-components 없이도 자동 설정됨
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -13,11 +15,11 @@ const nextConfig: NextConfig = {
       "@utils": path.resolve(__dirname, "src/app/utils"),
       "@styles": path.resolve(__dirname, "src/app/styles"),
       "@config": path.resolve(__dirname, "src/app/config"),
+      "@completeModal": path.resolve(__dirname, "src/app/(modals)/@completeModal"),
     };
 
     return config;
   },
 };
 
-export default nextConfig;
-
+module.exports = nextConfig;

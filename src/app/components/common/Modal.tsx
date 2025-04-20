@@ -23,10 +23,9 @@ export default function Modal({
     setIsClosing(true);
     setTimeout(() => {
       onClose();
-    }, 300); // fade out 시간과 맞춤
+    }, 300);
   };
 
-  // 💡 모달 열릴 때 body 스크롤 잠금
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -39,7 +38,7 @@ export default function Modal({
       <ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
         {showCloseIcon && (
           <CloseIcon onClick={handleClose}>
-            <IoClose size={24} />
+            <IoClose size={26} />
           </CloseIcon>
         )}
         {title && <ModalTitle>{title}</ModalTitle>}
@@ -49,7 +48,6 @@ export default function Modal({
   );
 }
 
-// ✅ 애니메이션 추가
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
@@ -61,37 +59,35 @@ const fadeOut = keyframes`
 `;
 
 const slideIn = keyframes`
-  from { transform: translateY(-10px); }
+  from { transform: translateY(-12px); }
   to { transform: translateY(0); }
 `;
 
 const slideOut = keyframes`
   from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
+  to { transform: translateY(-12px); }
 `;
 
-// ✅ 스타일 개선 + 애니메이션 적용
 const ModalOverlay = styled.div<{ $isClosing: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(30, 30, 30, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
   animation: ${({ $isClosing }) => ($isClosing ? fadeOut : fadeIn)} 0.3s ease forwards;
+  z-index: 1000;
 `;
 
 const ModalContent = styled.div<{ $isClosing: boolean }>`
   background: ${({ theme }) => theme.colors.cardBackground};
-  padding: 24px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  max-width: 400px;
+  padding: 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  max-width: 460px;
   width: 90%;
   position: relative;
   animation: ${({ $isClosing }) => ($isClosing ? slideOut : slideIn)} 0.3s ease forwards;
@@ -99,21 +95,18 @@ const ModalContent = styled.div<{ $isClosing: boolean }>`
 
 const CloseIcon = styled.button`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 16px;
+  right: 16px;
   background: none;
   border: none;
-  cursor: pointer;
   color: ${({ theme }) => theme.colors.textPrimary};
-  transition: all 0.3s ease-in-out;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-  }
+  cursor: pointer;
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
   color: ${({ theme }) => theme.colors.textPrimary};
+  text-align: center;
 `;
