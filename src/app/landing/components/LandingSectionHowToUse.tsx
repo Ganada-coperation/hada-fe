@@ -19,7 +19,7 @@ export default function LandingSectionHowToUse() {
 }
 
 const Section = styled.section`
-  padding: 80px 20px;
+  padding: 40px 20px;
   text-align: center;
 `;
 
