@@ -37,5 +37,5 @@ const Wrapper = styled.div`
 
 const Section = styled.section`
   width: 100%;
-  padding: 60px 0;
+  padding: 40px 0;
 `;
