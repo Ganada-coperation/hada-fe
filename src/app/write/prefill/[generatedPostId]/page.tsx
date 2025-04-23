@@ -1,4 +1,5 @@
 // src/app/write/prefill/[generatedPostId]/page.tsx
+"use client";
 
 import PrefillClientWrapper from "./PrefillClientWrapper";
 
@@ -9,5 +10,7 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  return <PrefillClientWrapper generatedPostId={params.generatedPostId} />;
+  const { generatedPostId } = params;
+
+  return <PrefillClientWrapper generatedPostId={generatedPostId} />;
 }
