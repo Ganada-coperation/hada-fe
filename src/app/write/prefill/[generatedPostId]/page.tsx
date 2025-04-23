@@ -1,12 +1,13 @@
 // src/app/write/prefill/[generatedPostId]/page.tsx
+
 import PrefillClientWrapper from "./PrefillClientWrapper";
 
-export default async function Page({
-  params,
-}: {
-  params: { generatedPostId: string };
-}) {
-  const generatedPostId = params.generatedPostId;
+interface PageProps {
+  params: {
+    generatedPostId: string;
+  };
+}
 
-  return <PrefillClientWrapper generatedPostId={generatedPostId} />;
+export default function Page({ params }: PageProps) {
+  return <PrefillClientWrapper generatedPostId={params.generatedPostId} />;
 }
