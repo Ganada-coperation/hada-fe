@@ -40,7 +40,6 @@ export default function LandingSectionChatbot() {
 }
 
 const Section = styled.section`
-  
   padding: 40px 20px;
   text-align: center;
 `;
