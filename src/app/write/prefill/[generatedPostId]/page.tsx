@@ -2,6 +2,7 @@
 
 import PrefillClientWrapper from "./PrefillClientWrapper";
 
+// ✅ 수정 후 (정상 작동)
 interface PageProps {
   params: {
     generatedPostId: string;
@@ -9,7 +10,8 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  const { generatedPostId } = params;
+  const generatedPostId = params.generatedPostId;
 
   return <PrefillClientWrapper generatedPostId={generatedPostId} />;
 }
+
