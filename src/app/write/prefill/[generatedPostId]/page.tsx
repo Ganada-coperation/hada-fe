@@ -1,9 +1,10 @@
 import PrefillClientWrapper from "./PrefillClientWrapper";
 
-export default function Page({
-  params: { generatedPostId },
+export default async function Page({
+  params,
 }: {
   params: { generatedPostId: string };
 }) {
+  const generatedPostId = params.generatedPostId;
   return <PrefillClientWrapper generatedPostId={generatedPostId} />;
 }
