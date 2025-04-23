@@ -41,7 +41,7 @@ const BubbleContainer = styled.div<{ from: "bot" | "user"; delay: number }>`
   animation-delay: ${({ delay }) => delay}s;
   opacity: 0;
 
-  ${({ from, theme }) =>
+  ${({ from}) =>
     from === "bot"
       ? css`
           align-self: flex-start;
