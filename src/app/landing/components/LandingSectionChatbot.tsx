@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import useScrollFadeIn from "../../hooks/useScrollFadeIn";
-import ChatBubble from "@components/common/ChatBubble";
+import ChatBubble from "@/app/components/common/ChatBubble";
 
 export default function LandingSectionChatbot() {
   const animated = useScrollFadeIn();
