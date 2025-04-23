@@ -1,5 +1,4 @@
 // src/app/write/prefill/[generatedPostId]/page.tsx
-"use client";
 
 import PrefillClientWrapper from "./PrefillClientWrapper";
 
