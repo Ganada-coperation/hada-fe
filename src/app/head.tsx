@@ -1,4 +1,3 @@
-
 // src/app/head.tsx (서버 컴포넌트)
 import Script from "next/script";
 
@@ -10,16 +9,12 @@ export default function Head() {
       <meta property="og:image" content="https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true" />
       <meta property="og:url" content="https://hada.ganadacorp.com" />
 
-      // src/app/head.tsx (서버 컴포넌트)
-
-    {/* 카카오 SDK 로드 (공식 도메인) */}
-    <Script
+      <Script
         src="https://developers.kakao.com/sdk/js/kakao.js"
         strategy="beforeInteractive"
         onError={() => console.error("❌ 카카오 SDK 로딩 실패")}
-    />
+      />
 
-      {/* SDK 초기화 */}
       <Script id="kakao-init" strategy="afterInteractive">
         {`
           if (window.Kakao && !window.Kakao.isInitialized()) {
