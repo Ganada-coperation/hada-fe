@@ -1,11 +1,11 @@
-
 import { apiRequest } from "./api";
 
 // generatedcontents 조회 API
 export async function fetchGeneratedContentById(generatedPostId: string) {
   if (!generatedPostId) throw new Error("generatedPostId가 필요합니다.");
 
-  const response = await apiRequest(`/generated-content/${generatedPostId}`, {
+  // 내부 프록시 API 라우트를 통해 CORS 없이 요청
+  const response = await apiRequest(`/api/generated-content/${generatedPostId}`, {
     method: "GET",
     cache: "no-store",
     next: { revalidate: 0 },
