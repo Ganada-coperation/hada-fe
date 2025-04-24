@@ -2,15 +2,14 @@
 
 import PrefillClientWrapper from "./PrefillClientWrapper";
 
-// ① Props 인터페이스 정의
-interface Props {
-  params: {
-    generatedPostId: string;
-  };
-}
+// ① params를 Promise<{ generatedPostId: string }>로 타입 지정
+type PageProps = {
+  params: Promise<{ generatedPostId: string }>;
+};
 
-// ② 제네릭(<Props>) 제거하고, 함수 파라미터에 Props 를 바로 적용
-export default async function Page({ params }: Props) {
-  const generatedPostId = params.generatedPostId;
+export default async function Page({ params }: PageProps) {
+  // ② await로 Promise 해제해서 실제 값을 꺼냅니다
+  const { generatedPostId } = await params;
+
   return <PrefillClientWrapper generatedPostId={generatedPostId} />;
 }
