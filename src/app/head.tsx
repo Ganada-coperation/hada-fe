@@ -1,4 +1,3 @@
-// src/app/head.tsx  <-- 서버 컴포넌트
 import Script from "next/script";
 
 export default function Head() {

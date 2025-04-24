@@ -1,18 +1,14 @@
-// src/app/layout.tsx
-import { ThemeProvider } from "styled-components";
-import GlobalStyle from "@styles/globalStyles";
-import theme from "@styles/theme";
+import { ReactNode } from "react";
 import { gowunBatang } from "@styles/fonts";
+import { ClientProviders } from "./ClientProviders";
 
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
       <body className={gowunBatang.className}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
+        <ClientProviders>
           {children}
-        </ThemeProvider>
+        </ClientProviders>
       </body>
     </html>
   );
