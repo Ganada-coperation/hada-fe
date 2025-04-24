@@ -42,7 +42,7 @@ export default function PrefillWritePage({ generatedPostId }: Props) {
       }
     };
     load();
-  }, [generatedPostId]);
+  }, [generatedPostId, router]);
 
   const handleSaveWithModal = async (email: string, mood: string) => {
     if (!nickname.trim()) {
