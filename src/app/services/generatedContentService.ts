@@ -4,13 +4,11 @@ import { apiRequest } from "./api";
 export async function fetchGeneratedContentById(generatedPostId: string) {
   if (!generatedPostId) throw new Error("generatedPostId가 필요합니다.");
 
-  // 내부 프록시 API 라우트를 통해 CORS 없이 요청
-  const response = await apiRequest(`/api/generated-content/${generatedPostId}`, {
-    method: "GET",
-    cache: "no-store",
-    next: { revalidate: 0 },
-  });
-
+    // 내부 프록시 API 호출로 변경 (CORS 우회)
+    const response = await apiRequest(
+      `/api/generated-content/${generatedPostId}`,
+      { method: "GET", cache: "no-store", next: { revalidate: 0 } }
+    );
   if (!response.result) {
     throw new Error(`generatedPostId(${generatedPostId})에 해당하는 글이 없습니다.`);
   }
