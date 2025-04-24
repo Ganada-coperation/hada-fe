@@ -10,7 +10,7 @@ export default function Head() {
       <meta property="og:url" content="https://hada.ganadacorp.com" />
 
       <Script
-        src="https://developers.kakao.com/sdk/js/kakao.min.js"
+        src="https://developers.kakao.com/sdk/js/kakao.js"
         strategy="beforeInteractive"
         onError={() => console.error("❌ 카카오 SDK 로딩 실패")}
       />
