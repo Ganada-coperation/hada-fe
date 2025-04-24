@@ -3,16 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }      // ← 여기에 타입을 명시!
 ) {
-  const { id } = params;
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;         // Vercel / .env.local 에 set
+  const { id } = context.params;
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
   const apiRes = await fetch(`${base}/generated-content/${id}`);
-
-  if (!apiRes.ok) {
-    return NextResponse.error();                              // 에러 시 500 반환
-  }
-
+  if (!apiRes.ok) return NextResponse.error();
   const data = await apiRes.json();
-  return NextResponse.json(data);                            // 성공 시 JSON 반환
+  return NextResponse.json(data);
 }
