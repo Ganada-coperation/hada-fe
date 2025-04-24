@@ -6,7 +6,7 @@ export async function savePost(request: CreatePostRequest) {
   const payload = request;
   console.log("📦 savePost 요청 payload:", payload);
 
-  const response = await apiRequest("/posts", {
+  const response = await apiRequest("/api/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -27,7 +27,7 @@ export async function sendPostMail(email: string, postId: string) {
   const payload = { email, postId };
   console.log("📧 이메일 전송 요청 payload:", payload);
 
-  const response = await apiRequest("/posts/send-mail", {  // ✅ 경로 수정!
+  const response = await apiRequest("/api/posts/send-mail", {   // ✅ 경로 수정!
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
