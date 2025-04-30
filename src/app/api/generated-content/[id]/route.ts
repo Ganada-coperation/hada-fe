@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 /**
  * GET /api/generated-content/:id
  * Proxy to external generated-content API
- */
+ **/
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
