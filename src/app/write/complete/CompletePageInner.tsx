@@ -10,7 +10,6 @@ export default function CompletePageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-
   const [isKakaoReady, setIsKakaoReady] = useState(false);
 
   useEffect(() => {
@@ -18,8 +17,7 @@ export default function CompletePageInner() {
     script.src = "https://developers.kakao.com/sdk/js/kakao.js";
     script.async = true;
     script.onload = () => {
-      const kakaoKey = "f701c1be96a5432920b76ec27e7c656a";
-      window.Kakao.init(kakaoKey);
+      window.Kakao.init("f701c1be96a5432920b76ec27e7c656a");
       setIsKakaoReady(window.Kakao.isInitialized());
     };
     document.head.appendChild(script);
@@ -31,16 +29,14 @@ export default function CompletePageInner() {
       toast.error("공유할 글 ID가 없습니다.");
       return;
     }
-  
-    // 클라이언트 환경에서 도메인 얻기
+
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
         : "https://hada.ganadacorp.com";
-  
-    // ★ 여기만 /posts/[postId] 로 바꿉니다
+
     const linkUrl = `${origin}/posts/${postId}`;
-  
+
     window.Kakao.Link.sendDefault({
       objectType: "feed",
       content: {
@@ -80,10 +76,7 @@ export default function CompletePageInner() {
             onClick={handleShare}
             disabled={!isKakaoReady}
           />
-          <Button
-            text="🏠 홈으로 돌아가기"
-            onClick={() => router.push("/")}
-          />
+          <Button text="🏠 홈으로 돌아가기" onClick={() => router.push("/")} />
         </ButtonGroup>
       </Container>
     </PageWrapper>
@@ -112,15 +105,16 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 26px;
+  font-size: var(--fs-xl);        /* 28px */
+  line-height: var(--lh-heading); /* 1.4 */
   font-weight: bold;
   margin-bottom: 16px;
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 const Description = styled.p`
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: var(--fs-sm);       /* 18px */
+  line-height: var(--lh-body);   /* 1.6 */
   color: ${({ theme }) => theme.colors.textSecondary};
   margin-bottom: 32px;
 `;

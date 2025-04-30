@@ -1,14 +1,17 @@
-const theme = {
+// src/app/styles/theme.ts
+import { DefaultTheme } from "styled-components";
+
+const theme: DefaultTheme = {
   colors: {
-    primary: "#3C4F76",            // 신뢰감 있는 짙은 블루
-    secondary: "#6D5D4E",          // 따뜻한 브라운
-    background: "#FFF8F0",         // 부드러운 베이지 톤 배경
-    cardBackground: "#FFFFFF",    
+    primary: "#3C4F76",
+    secondary: "#6D5D4E",
+    background: "#FFF8F0",
+    cardBackground: "#FFFFFF",
     border: "#D8CFC4",
-    textPrimary: "#2B2B2B",        // 진한 검은 회색으로 눈에 더 잘 띔
+    textPrimary: "#2B2B2B",
     textSecondary: "#5F5F5F",
     textMuted: "#9D9D9D",
-    floating: "#FFD700",           // 밝고 눈에 띄는 노란색
+    floating: "#FFD700",
   },
   layout: {
     maxWidth: "460px",
@@ -17,5 +20,30 @@ const theme = {
     wrapperPadding:
       "env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)",
   },
+  // ← 여기부터 추가
+  fonts: {
+    primary: "var(--font-gowunbatang)",
+  },
+  typography: {
+    fontSizes: {
+      xs: "16px",   // 보조 텍스트
+      sm: "18px",   // 버튼·레이블
+      md: "20px",   // 본문 기본
+      lg: "24px",   // 큰 본문
+      xl: "28px",   // H3
+      xxl: "32px",  // H2
+      xxxl: "36px", // H1
+    },
+    lineHeights: {
+      body: 1.6,
+      heading: 1.4,
+    },
+    letterSpacings: {
+      normal: "0.02em",
+      wide: "0.03em",
+    },
+  },
+ 
 };
+
 export default theme;

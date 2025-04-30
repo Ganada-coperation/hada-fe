@@ -21,7 +21,7 @@ export function ClientProviders({ children }: { children: ReactNode }) {
           })(window,document,'script','dataLayer','GTM-5X95W8N8');
         `}
       </Script>
-
+     
       {/* 테마 & 글로벌 스타일 */}
       <ThemeProvider theme={theme}>
         <GlobalStyle />
