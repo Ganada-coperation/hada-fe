@@ -7,18 +7,24 @@ import { gowunBatang } from "@styles/fonts";
 import { fetcher } from "@utils/fetcher";
 
 export default function PostDetailPage() {
-  const { postId } = useParams();
+  const { postId } = useParams() as { postId?: string };
 
-// 1) postId 없으면 바로 에러 처리
- if (!postId) {
-   return <ErrorText>잘못된 접근입니다.</ErrorText>;
- }
+  // 🚀 훅은 무조건 최상단에서 한 번만!
+  const { data, error } = useSWR(
+    postId ? `/posts/${postId}` : null,
+    fetcher
+  );
 
-  // 2) 실제 API 경로로 바꿈
-  const { data, error } = useSWR(postId ? `/posts/${postId}` : null, fetcher);
-
-  if (error) return <ErrorText>글을 불러오는 중 오류가 발생했습니다.</ErrorText>;
-  if (!data) return <LoadingText>글을 불러오는 중입니다...</LoadingText>;
+  // 여기에부터 안전하게 early return
+  if (!postId) {
+    return <ErrorText>잘못된 접근입니다.</ErrorText>;
+  }
+  if (error) {
+    return <ErrorText>글을 불러오는 중 오류가 발생했습니다.</ErrorText>;
+  }
+  if (!data) {
+    return <LoadingText>글을 불러오는 중입니다...</LoadingText>;
+  }
 
   const { nickname, title, content } = data.result;
 
@@ -33,6 +39,7 @@ export default function PostDetailPage() {
     </PageWrapper>
   );
 }
+
 
 // 스타일
 const PageWrapper = styled.div`
