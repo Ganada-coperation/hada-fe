@@ -1,21 +1,17 @@
 // src/app/api/generated-content/[id]/route.ts
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";  // 타입 임포트만 유지 가능
 
 /**
  * GET /api/generated-content/:id
  * Proxy to external generated-content API
  */
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
   if (!id) {
-    return NextResponse.json(
-      { error: "ID가 없습니다." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "ID가 없습니다." }, { status: 400 });
   }
 
   const base = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -50,7 +46,6 @@ export async function GET(
     );
   }
 
-  // 정상 응답
   let data;
   try {
     data = JSON.parse(text);
