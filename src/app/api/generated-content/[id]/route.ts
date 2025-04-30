@@ -1,15 +1,15 @@
 // src/app/api/generated-content/[id]/route.ts
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 /**
  * GET /api/generated-content/:id
  * Proxy to external generated-content API
  */
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: any
 ) {
-  const id = params.id;
+  const id: string = params.id;
   if (!id) {
     return NextResponse.json({ error: "ID가 없습니다." }, { status: 400 });
   }
