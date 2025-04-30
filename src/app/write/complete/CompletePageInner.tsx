@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 export default function CompletePageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const postId = searchParams.get("postId");
+
 
   const [isKakaoReady, setIsKakaoReady] = useState(false);
 
