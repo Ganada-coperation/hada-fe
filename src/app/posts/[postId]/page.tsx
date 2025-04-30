@@ -9,7 +9,13 @@ import { fetcher } from "@utils/fetcher";
 export default function PostDetailPage() {
   const { postId } = useParams();
 
-  const { data, error } = useSWR(`/posts/${postId}`, fetcher);
+// 1) postId 없으면 바로 에러 처리
+ if (!postId) {
+   return <ErrorText>잘못된 접근입니다.</ErrorText>;
+ }
+
+  // 2) 실제 API 경로로 바꿈
+  const { data, error } = useSWR(postId ? `/posts/${postId}` : null, fetcher);
 
   if (error) return <ErrorText>글을 불러오는 중 오류가 발생했습니다.</ErrorText>;
   if (!data) return <LoadingText>글을 불러오는 중입니다...</LoadingText>;

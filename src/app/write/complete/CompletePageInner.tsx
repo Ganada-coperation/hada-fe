@@ -26,33 +26,39 @@ export default function CompletePageInner() {
   }, []);
 
   const handleShare = () => {
-    if (!window.Kakao?.isInitialized()) {
-      toast.error("카카오톡 공유 준비 중입니다. 잠시 후 시도해주세요.");
+    const postId = searchParams.get("postId");
+    if (!postId) {
+      toast.error("공유할 글 ID가 없습니다.");
       return;
     }
-
-    const baseUrl =
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3001"
+  
+    // 클라이언트 환경에서 도메인 얻기
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
         : "https://hada.ganadacorp.com";
-
+  
+    // ★ 여기만 /posts/[postId] 로 바꿉니다
+    const linkUrl = `${origin}/posts/${postId}`;
+  
     window.Kakao.Link.sendDefault({
       objectType: "feed",
       content: {
         title: "하다 ✍️ 당신의 이야기를 기록하세요",
         description: "지금 당신의 이야기를 친구와 공유하세요.",
-        imageUrl: "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
+        imageUrl:
+          "https://github.com/heyn2/hada-assets/blob/main/hada.1.jpeg?raw=true",
         link: {
-          mobileWebUrl: `${baseUrl}/write/prefill/${postId}`,
-          webUrl: `${baseUrl}/write/prefill/${postId}`,
+          mobileWebUrl: linkUrl,
+          webUrl: linkUrl,
         },
       },
       buttons: [
         {
           title: "지금 확인하기",
           link: {
-            mobileWebUrl: `${baseUrl}/write/prefill/${postId}`,
-            webUrl: `${baseUrl}/write/prefill/${postId}`,
+            mobileWebUrl: linkUrl,
+            webUrl: linkUrl,
           },
         },
       ],
