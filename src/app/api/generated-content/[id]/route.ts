@@ -7,9 +7,9 @@ import { NextResponse, NextRequest } from "next/server";
  */
 export async function GET(
   request: NextRequest,
-  { params }: any
+  { params }: { params: { id: string } }
 ) {
-  const id: string = params.id;
+  const id = params.id;
   if (!id) {
     return NextResponse.json({ error: "ID가 없습니다." }, { status: 400 });
   }
