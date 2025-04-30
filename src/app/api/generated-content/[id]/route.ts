@@ -4,16 +4,18 @@ import { NextResponse, NextRequest } from "next/server";
 /**
  * GET /api/generated-content/:id
  * Proxy to external generated-content API
- **/
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
+ */
+export async function GET(request: NextRequest) {
+  // 1) 요청 URL에서 pathname 뽑기
+  const url = new URL(request.url);
+  // 2) 빈 문자열 제거 후 마지막 세그먼트를 ID로 사용
+  const segments = url.pathname.split("/").filter(Boolean);
+  const id = segments.pop();
   if (!id) {
     return NextResponse.json({ error: "ID가 없습니다." }, { status: 400 });
   }
 
+  // 3) 실제 외부 API로 프록시 호출
   const base = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!base) {
     console.error("API base URL is not defined");
