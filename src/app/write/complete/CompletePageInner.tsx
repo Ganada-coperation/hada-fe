@@ -105,16 +105,16 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: var(--fs-xl);        /* 28px */
-  line-height: var(--lh-heading); /* 1.4 */
+  font-size: ${({ theme }) => theme.typography.fontSizes.xl};        /* 28px */
+  line-height: ${({ theme }) => theme.typography.lineHeights.heading}; /* 1.4 */
   font-weight: bold;
   margin-bottom: 16px;
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
 const Description = styled.p`
-  font-size: var(--fs-sm);       /* 18px */
-  line-height: var(--lh-body);   /* 1.6 */
+  font-size: ${({ theme }) => theme.typography.fontSizes.sm};       /* 18px */
+  line-height: ${({ theme }) => theme.typography.lineHeights.body};   /* 1.6 */
   color: ${({ theme }) => theme.colors.textSecondary};
   margin-bottom: 32px;
 `;

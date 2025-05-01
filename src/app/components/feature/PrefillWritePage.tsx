@@ -93,54 +93,54 @@ export default function PrefillWritePage({ generatedPostId }: Props) {
 
   return (
     <AppLayout>
-    <Container>
-      <Header>당신의 이야기를 들려주세요</Header>
-      <Subtext>마음을 천천히 꺼내 적어보세요. ‘하다’가 함께합니다.</Subtext>
+      <Container>
+        <Header>당신의 이야기를 들려주세요</Header>
+        <Subtext>마음을 천천히 꺼내 적어보세요. ‘하다’가 함께합니다.</Subtext>
 
-      <Form>
-        <FieldGroup>
-          <Label htmlFor="nickname">👤 닉네임</Label>
-          <Input
-            placeholder="예: 봄날의 고양이"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+        <Form>
+          <FieldGroup>
+            <Label htmlFor="nickname">👤 닉네임</Label>
+            <Input
+              placeholder="예: 봄날의 고양이"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
+            {showNicknameError && (
+              <FeedbackMessage isError>닉네임을 입력하세요</FeedbackMessage>
+            )}
+          </FieldGroup>
+
+          <FieldGroup>
+            <Label htmlFor="title">📝 제목</Label>
+            <Input
+              placeholder="예: 오늘, 내 마음을 기록합니다"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </FieldGroup>
+
+          <FieldGroup $isLast>
+            <Label htmlFor="content">📖 글 내용</Label>
+            <StyledTextarea
+              placeholder="오늘 하루는 어땠나요? 당신의 이야기를 자유롭게 적어보세요."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          </FieldGroup>
+
+          <Button text="✉️ 이야기 저장하기" onClick={handleClickSave} />
+        </Form>
+
+        {modalOpen && (
+          <CompletedModal
+            nickname={nickname}
+            onClose={() => setModalOpen(false)}
+            onConfirm={handleSaveWithModal}
           />
-          {showNicknameError && (
-            <FeedbackMessage isError>닉네임을 입력하세요</FeedbackMessage>
-          )}
-        </FieldGroup>
+        )}
 
-        <FieldGroup>
-          <Label htmlFor="title">📝 제목</Label>
-          <Input
-            placeholder="예: 오늘, 내 마음을 기록합니다"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </FieldGroup>
-
-        <FieldGroup $isLast>
-          <Label htmlFor="content">📖 글 내용</Label>
-          <StyledTextarea
-            placeholder="오늘 하루는 어땠나요? 당신의 이야기를 자유롭게 적어보세요."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-        </FieldGroup>
-
-        <Button text="✉️ 이야기 저장하기" onClick={handleClickSave} />
-      </Form>
-
-      {modalOpen && (
-        <CompletedModal
-          nickname={nickname}
-          onClose={() => setModalOpen(false)}
-          onConfirm={handleSaveWithModal}
-        />
-      )}
-
-      {loading && <LoadingSpinner />}
-    </Container>
+        {loading && <LoadingSpinner />}
+      </Container>
     </AppLayout>
   );
 }
@@ -153,7 +153,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.h1`
-  font-size: 26px;
+  font-size: var(--fs-xl);
   font-weight: bold;
   text-align: center;
   margin-bottom: 8px;
@@ -162,7 +162,7 @@ const Header = styled.h1`
 
 const Subtext = styled.p`
   text-align: center;
-  font-size: 16px;
+  font-size: var(--fs-xs);
   color: ${({ theme }) => theme.colors.textSecondary};
   margin-bottom: 32px;
 `;
@@ -198,7 +198,6 @@ const Form = styled.div`
   }
 `;
 
-
 const FieldGroup = styled("div").withConfig({
   shouldForwardProp: (prop) => isPropValid(prop) && prop !== "$isLast",
 })<{ $isLast?: boolean }>`
@@ -210,7 +209,7 @@ const FieldGroup = styled("div").withConfig({
 `;
 
 const Label = styled.label`
-  font-size: 17px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   margin-bottom: 10px;
   color: ${({ theme }) => theme.colors.textPrimary};
@@ -218,7 +217,7 @@ const Label = styled.label`
 
 const StyledTextarea = styled.textarea`
   padding: 18px;
-  font-size: 16px;
+  font-size: var(--fs-xs);
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   resize: vertical;
